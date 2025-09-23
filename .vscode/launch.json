@@ -18,18 +18,6 @@
             ]
         },
         {
-            "name": "Mac Debug - Dev",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "debug",
-            "program": "lib/main.dart",
-            "args": [
-                "--flavor",
-                "dev",
-                "--dart-define=env=dev",
-            ]
-        },
-        {
             "name": "Web Debug - Prod",
             "request": "launch",
             "type": "dart",
@@ -43,18 +31,6 @@
             ]
         },
         {
-            "name": "Mac Debug - Prod",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "debug",
-            "program": "lib/main.dart",
-            "args": [
-                "--flavor",
-                "prod",
-                "--dart-define=env=prod",
-            ]
-        },
-        {
             "name": "Web Release - Prod",
             "request": "launch",
             "type": "dart",
@@ -63,18 +39,6 @@
             "args": [
                 "--web-port",
                 "54290",
-            ]
-        },
-        {
-            "name": "Mac Release - Prod",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "release",
-            "program": "lib/main.dart",
-            "args": [
-                "--flavor",
-                "prod",
-                "--dart-define=env=prod",
             ]
         }
     ]
