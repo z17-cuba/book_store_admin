@@ -74,10 +74,13 @@ jobs:
           echo "Build cache found, skipping flutter clean"
         fi
         flutter pub get
+    - name: Setup Pages
+      id: pages
+      uses: actions/configure-pages@v5
 
     - name: Build Flutter web
       run: |
-        flutter build web --release --web-renderer=canvaskit --pwa-strategy=none
+        flutter build web --release --base-href "${{ steps.pages.outputs.base_path }}/" --web-renderer=canvaskit --pwa-strategy=none
 
     - name: Update base href for GitHub Pages
       run: |
