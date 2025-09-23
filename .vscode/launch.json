@@ -1,0 +1,81 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Web Debug - Dev",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "debug",
+            "program": "lib/main.dart",
+            "args": [
+                "--web-port",
+                "54287",
+                "--web-browser-flag",
+                "--disable-web-security",
+            ]
+        },
+        {
+            "name": "Mac Debug - Dev",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "debug",
+            "program": "lib/main.dart",
+            "args": [
+                "--flavor",
+                "dev",
+                "--dart-define=env=dev",
+            ]
+        },
+        {
+            "name": "Web Debug - Prod",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "debug",
+            "program": "lib/main.dart",
+            "args": [
+                "--web-port",
+                "54289",
+                "--web-browser-flag",
+                "--disable-web-security",
+            ]
+        },
+        {
+            "name": "Mac Debug - Prod",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "debug",
+            "program": "lib/main.dart",
+            "args": [
+                "--flavor",
+                "prod",
+                "--dart-define=env=prod",
+            ]
+        },
+        {
+            "name": "Web Release - Prod",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release",
+            "program": "lib/main.dart",
+            "args": [
+                "--web-port",
+                "54290",
+            ]
+        },
+        {
+            "name": "Mac Release - Prod",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release",
+            "program": "lib/main.dart",
+            "args": [
+                "--flavor",
+                "prod",
+                "--dart-define=env=prod",
+            ]
+        }
+    ]
+}
