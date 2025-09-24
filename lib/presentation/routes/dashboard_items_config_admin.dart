@@ -5,7 +5,7 @@ import 'package:book_store_admin/presentation/pages/home/home_pages/books/books_
 import 'package:book_store_admin/presentation/pages/home/home_pages/dashboard/dashboard_page.dart';
 import 'package:book_store_admin/presentation/routes/dashboard_item.dart';
 import 'package:book_store_admin/presentation/routes/routes.dart';
-import 'package:book_store_admin/presentation/routes/tags_page.dart';
+import 'package:book_store_admin/presentation/pages/home/tags_page.dart';
 import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
 
