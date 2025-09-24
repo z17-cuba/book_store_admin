@@ -3,6 +3,7 @@ import 'package:book_store_admin/data/datasources/parse_base_datasource.dart';
 import 'package:book_store_admin/data/models/author_model.dart';
 import 'package:book_store_admin/data/models/category_model.dart';
 import 'package:book_store_admin/data/models/parse_book_model.dart';
+import 'package:book_store_admin/data/models/tag_model.dart';
 import 'package:book_store_admin/presentation/app/constants/constants.dart';
 import 'package:logger/logger.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
@@ -123,7 +124,7 @@ class CheckoutDatasource {
                 categories: categories
                     .map((c) => CategoryModel.fromJson(c.toJson()))
                     .toList(),
-                tags: tags,
+                tags: tags.map((c) => TagModel.fromJson(c.toJson())).toList(),
               ));
               orderedCounts.add(sortedEntry.value);
             }

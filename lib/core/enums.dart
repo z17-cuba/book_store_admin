@@ -33,7 +33,19 @@ enum DownloadQuality { low, medium, high }
 
 enum LibraryStatus { active, inactive }
 
-enum BookStatus { active, inactive }
+enum BookStatus {
+  active,
+  inactive;
+
+  static BookStatus? valueOf(String? value) {
+    if (value == null) {
+      return null;
+    }
+    return BookStatus.values.firstWhere(
+      (element) => element.name == value,
+    );
+  }
+}
 
 enum BookContentRating {
   allAges, // Suitable for everyone
@@ -42,5 +54,14 @@ enum BookContentRating {
   teen, // Ages ~13+
   mature, // Ages ~16-18+
   adult, // Explicit content, 18+ only
-  unrated, // Not yet rated / unknown
+  unrated; // Not yet rated / unknown
+
+  static BookContentRating? valueOf(String? value) {
+    if (value == null) {
+      return null;
+    }
+    return BookContentRating.values.firstWhere(
+      (element) => element.name == value,
+    );
+  }
 }

@@ -4,9 +4,9 @@ import 'package:book_store_admin/core/enums.dart';
 import 'package:book_store_admin/core/validator.dart';
 import 'package:book_store_admin/core/auxiliary_functions.dart';
 import 'package:book_store_admin/data/models/publisher_model.dart';
-import 'package:book_store_admin/data/models/tags_model.dart';
 import 'package:book_store_admin/domain/models/author_domain.dart';
 import 'package:book_store_admin/domain/models/category_domain.dart';
+import 'package:book_store_admin/domain/models/tag_domain.dart';
 import 'package:book_store_admin/presentation/app/constants/constants.dart';
 import 'package:book_store_admin/presentation/app/theme/colors.dart';
 import 'package:book_store_admin/presentation/app/theme/text_styles.dart';
@@ -67,13 +67,87 @@ class AddEditBookPage extends GetView<AddEditBookController> {
                 ),
                 20.verticalSpace,
                 // Thumbnail
-                Obx(
-                  () => CircleImageCard(
-                    imageBytes:
-                        controller.thumbnailBytes?.value ?? Uint8List(0),
-                    onSelectNewFile: () async =>
-                        await controller.selectThumbnail(),
-                  ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Obx(
+                        () => CircleImageCard(
+                          imageUrl: controller.book?.thumbnailUrl,
+                          imageBytes:
+                              controller.thumbnailBytes?.value ?? Uint8List(0),
+                          onSelectNewFile: () async =>
+                              await controller.selectThumbnail(),
+                        ),
+                      ),
+                    ),
+                    20.horizontalSpace,
+                    // Language - ISBN - PageCount
+                    Expanded(
+                        child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        CustomTextFormField(
+                          controller: controller.languageController,
+                          keyboardType: TextInputType.name,
+                          textInputAction: TextInputAction.next,
+                          labelText: 'app.language'.tr,
+                          prefixIcon: HugeIcon(
+                            icon: HugeIcons.strokeRoundedLanguageSquare,
+                            color: Theme.of(context).highlightColor,
+                          ),
+                          hintText: 'es',
+                          suffixIcon: const HugeIcon(
+                            icon: HugeIcons.strokeRoundedAsterisk02,
+                            color: AppColors.redError,
+                          ),
+                          labelTextColor: Theme.of(context).highlightColor,
+                          validator: (value) => Validator.notEmpty(
+                            value,
+                            'app.fieldIsEmpty'.tr,
+                          ),
+                        ),
+                        20.verticalSpace,
+                        CustomTextFormField(
+                          controller: controller.isbnController,
+                          keyboardType: TextInputType.name,
+                          textInputAction: TextInputAction.next,
+                          labelText: 'app.isbn'.tr,
+                          maxLines: 2,
+                          prefixIcon: HugeIcon(
+                            icon: HugeIcons.strokeRoundedInformationCircle,
+                            color: Theme.of(context).highlightColor,
+                          ),
+                          suffixIcon: const HugeIcon(
+                            icon: HugeIcons.strokeRoundedAsterisk02,
+                            color: AppColors.redError,
+                          ),
+                          labelTextColor: Theme.of(context).highlightColor,
+                          validator: (value) => Validator.isbn(
+                            value,
+                            'app.fieldIsEmpty'.tr,
+                            'app.notValidIsbn'.tr,
+                          ),
+                        ),
+                        20.verticalSpace,
+                        CustomTextFormField(
+                          controller: controller.pageCountController,
+                          keyboardType: TextInputType.number,
+                          textInputAction: TextInputAction.next,
+                          labelText: 'app.pages'.tr,
+                          prefixIcon: HugeIcon(
+                            icon: HugeIcons.strokeRoundedBookOpen02,
+                            color: Theme.of(context).highlightColor,
+                          ),
+                          labelTextColor: Theme.of(context).highlightColor,
+                          validator: (value) =>
+                              Validator.validateNotRequiredNumber(
+                            value,
+                            'app.fieldIsNotANumber'.tr,
+                          ),
+                        ),
+                      ],
+                    ))
+                  ],
                 ),
                 20.verticalSpace,
                 // Title
@@ -125,54 +199,6 @@ class AddEditBookPage extends GetView<AddEditBookController> {
                   labelTextColor: Theme.of(context).highlightColor,
                 ),
                 20.verticalSpace,
-                // Language - PageCount
-                Row(
-                  children: [
-                    // Language
-                    Expanded(
-                      child: CustomTextFormField(
-                        controller: controller.languageController,
-                        keyboardType: TextInputType.name,
-                        textInputAction: TextInputAction.next,
-                        labelText: 'app.language'.tr,
-                        prefixIcon: HugeIcon(
-                          icon: HugeIcons.strokeRoundedLanguageSquare,
-                          color: Theme.of(context).highlightColor,
-                        ),
-                        suffixIcon: const HugeIcon(
-                          icon: HugeIcons.strokeRoundedAsterisk02,
-                          color: AppColors.redError,
-                        ),
-                        labelTextColor: Theme.of(context).highlightColor,
-                        validator: (value) => Validator.notEmpty(
-                          value,
-                          'app.fieldIsEmpty'.tr,
-                        ),
-                      ),
-                    ),
-                    20.horizontalSpace,
-                    // PageCount
-                    Expanded(
-                      child: CustomTextFormField(
-                        controller: controller.pageCountController,
-                        keyboardType: TextInputType.number,
-                        textInputAction: TextInputAction.next,
-                        labelText: 'app.pages'.tr,
-                        prefixIcon: HugeIcon(
-                          icon: HugeIcons.strokeRoundedBookOpen02,
-                          color: Theme.of(context).highlightColor,
-                        ),
-                        labelTextColor: Theme.of(context).highlightColor,
-                        validator: (value) =>
-                            Validator.validateNotRequiredNumber(
-                          value,
-                          'app.fieldIsNotANumber'.tr,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                20.verticalSpace,
                 // Authors
                 Obx(
                   () => controller.isLoadingAuthors.value
@@ -196,7 +222,7 @@ class AddEditBookPage extends GetView<AddEditBookController> {
                       child: Obx(
                         () => controller.isLoadingTags.value
                             ? const Center(child: CircularProgressIndicator())
-                            : _buildMultiSelect<TagsModel>(
+                            : _buildMultiSelect<TagDomain>(
                                 context: context,
                                 label: 'app.tags'.tr,
                                 items: controller.tags,
@@ -232,47 +258,46 @@ class AddEditBookPage extends GetView<AddEditBookController> {
                 ),
                 20.verticalSpace,
                 // Content Rating - Status
-                Obx(
-                  () => Row(
-                    children: [
-                      Expanded(
-                        child: _buildDropdown<BookContentRating>(
-                          context: context,
-                          label: 'app.contentRating'.tr,
-                          value: controller.contentRating.value,
-                          items: BookContentRating.values,
-                          onChanged: (val) {
-                            if (val != null) {
-                              controller.contentRating.value = val;
-                            }
-                          },
-                        ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildDropdown<BookContentRating>(
+                        context: context,
+                        label: 'app.contentRating'.tr,
+                        value: controller.contentRating.value,
+                        items: BookContentRating.values,
+                        onChanged: (val) {
+                          if (val != null) {
+                            controller.contentRating.value = val;
+                          }
+                        },
                       ),
-                      20.horizontalSpace,
-                      Expanded(
-                        child: _buildDropdown<BookStatus>(
-                          context: context,
-                          label: 'app.status'.tr,
-                          value: controller.status.value,
-                          items: BookStatus.values,
-                          onChanged: (val) {
-                            if (val != null) controller.status.value = val;
-                          },
-                        ),
+                    ),
+                    20.horizontalSpace,
+                    Expanded(
+                      child: _buildDropdown<BookStatus>(
+                        context: context,
+                        label: 'app.status'.tr,
+                        value: controller.status.value,
+                        items: BookStatus.values,
+                        onChanged: (val) {
+                          if (val != null) controller.status.value = val;
+                        },
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
+
                 20.verticalSpace,
                 // Book Type
                 Row(
                   children: [
-                    Obx(
-                      () => controller.isLoadingPublishers.value
-                          ? const CircularProgressIndicator()
-                          : controller.publisher.value != null
-                              ? Expanded(
-                                  child: _buildDropdown<PublisherModel>(
+                    Expanded(
+                      child: Obx(
+                        () => controller.isLoadingPublishers.value
+                            ? const CircularProgressIndicator()
+                            : controller.publisher.value != null
+                                ? _buildDropdown<PublisherModel>(
                                     context: context,
                                     label: 'app.publisher'.tr,
                                     value: controller.publisher.value!,
@@ -282,22 +307,24 @@ class AddEditBookPage extends GetView<AddEditBookController> {
                                         controller.publisher.value = val;
                                       }
                                     },
-                                  ),
-                                )
-                              : const SizedBox.shrink(),
+                                  )
+                                : const SizedBox.shrink(),
+                      ),
                     ),
                     20.horizontalSpace,
                     Expanded(
-                      child: Obx(
-                        () => Row(
-                          children: [
-                            Text(
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
                               'app.type'.tr,
                               style: textStyleAppBar,
                             ),
-                            5.horizontalSpace,
-                            Expanded(
-                              child: _buildDropdown<BookType>(
+                          ),
+                          5.horizontalSpace,
+                          Expanded(
+                            child: Obx(
+                              () => _buildDropdown<BookType>(
                                 context: context,
                                 label: 'app.type'.tr,
                                 value: controller.type.value,
@@ -308,8 +335,8 @@ class AddEditBookPage extends GetView<AddEditBookController> {
                                 },
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
@@ -358,7 +385,7 @@ class AddEditBookPage extends GetView<AddEditBookController> {
                 20.verticalSpace,
                 Obx(
                   () => PrimaryButton(
-                    onPressed: () => controller.createBook(context),
+                    onPressed: () => controller.createOrUpdateBook(context),
                     expand: false,
                     isValid: controller.selectedFile.value != null,
                     title: controller.bookId == null
@@ -405,13 +432,15 @@ class AddEditBookPage extends GetView<AddEditBookController> {
       items: items.map((T item) {
         return DropdownMenuItem<T>(
           value: item,
-          child: Flexible(
-            child: Text((item is Enum)
+          child: Text(
+            (item is Enum)
                 ? AuxiliaryFunctions.getMatchStringToLocale((item as Enum).name)
                     .tr
                 : (item is PublisherModel)
                     ? (item.name ?? '')
-                    : item.toString()),
+                    : item.toString(),
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
           ),
         );
       }).toList(),

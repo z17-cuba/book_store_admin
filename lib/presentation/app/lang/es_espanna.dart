@@ -103,6 +103,7 @@ const Map<String, String> esEs = {
   'app.description': 'Descripción',
   'app.status': 'Estado',
   'app.isbn': 'ISBN',
+  'app.notValidIsbn': 'No es un ISBN válido',
   'app.actions': 'Acciones',
   'app.deleteBook': 'Eliminar libro',
   'app.deleteBookWarning':

@@ -59,6 +59,16 @@ class Validator {
     }
   }
 
+  static String? isbn(String? value, String emptyString, String notValidIsbn) {
+    if (value == null || value.isEmpty) {
+      return emptyString;
+    } else if (isbn10.hasMatch(value) || isbn13.hasMatch(value)) {
+      return null;
+    } else {
+      return notValidIsbn;
+    }
+  }
+
   ///Validation for number fields that are not required
   static String? validateNotRequiredNumber(
     String? value,

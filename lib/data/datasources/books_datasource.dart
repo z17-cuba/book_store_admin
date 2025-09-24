@@ -9,6 +9,7 @@ import 'package:book_store_admin/data/models/author_model.dart';
 import 'package:book_store_admin/data/models/book_model.dart';
 import 'package:book_store_admin/data/models/category_model.dart';
 import 'package:book_store_admin/data/models/parse_book_model.dart';
+import 'package:book_store_admin/data/models/tag_model.dart';
 import 'package:book_store_admin/presentation/app/constants/constants.dart';
 import 'package:logger/logger.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
@@ -105,15 +106,17 @@ class BooksDatasource {
           ParseBaseDatasource.getRelationObjects(bookObject, 'tags'),
         ]);
 
-        books.add(ParseBookModel(
-          book: representativeObject,
-          authors:
-              authors.map((a) => AuthorModel.fromJson(a.toJson())).toList(),
-          categories: categories
-              .map((c) => CategoryModel.fromJson(c.toJson()))
-              .toList(),
-          tags: tags,
-        ));
+        books.add(
+          ParseBookModel(
+            book: representativeObject,
+            authors:
+                authors.map((a) => AuthorModel.fromJson(a.toJson())).toList(),
+            categories: categories
+                .map((c) => CategoryModel.fromJson(c.toJson()))
+                .toList(),
+            tags: tags.map((c) => TagModel.fromJson(c.toJson())).toList(),
+          ),
+        );
       }
 
       return books;
@@ -251,7 +254,7 @@ class BooksDatasource {
               authors:
                   authors.map((a) => AuthorModel.fromJson(a.toJson())).toList(),
               categories: [],
-              tags: tags,
+              tags: tags.map((c) => TagModel.fromJson(c.toJson())).toList(),
             ),
           );
         }
@@ -315,7 +318,7 @@ class BooksDatasource {
             categories: categories
                 .map((c) => CategoryModel.fromJson(c.toJson()))
                 .toList(),
-            tags: tags,
+            tags: tags.map((c) => TagModel.fromJson(c.toJson())).toList(),
           );
         }
       }
@@ -384,9 +387,6 @@ class BooksDatasource {
 
   Future<String?> createBook({
     required BookModel bookModel,
-    required List<String> authorIds,
-    required List<String> categoriesIds,
-    required List<String> tags,
     required String libraryId,
     required BookType bookType,
     String? publisherId,
@@ -404,7 +404,6 @@ class BooksDatasource {
         ..set('description', bookModel.description)
         ..set('status', bookModel.status)
         ..set('language', bookModel.language)
-        ..set('publicationDate', bookModel.publicationDate)
         ..set('pageCount', bookModel.pageCount)
         ..set('contentRating', bookModel.contentRating)
         ..set('library', ParseObject(back4AppLibraries)..objectId = libraryId)
@@ -440,11 +439,66 @@ class BooksDatasource {
     }
   }
 
+  Future<String?> updateBook({
+    required BookModel bookModel,
+    required String libraryId,
+    required BookType bookType,
+    String? publisherId,
+    Uint8List? photoBytes,
+  }) async {
+    try {
+      logger.i('Updating new book ${bookModel.toString()}');
+
+      ParseFileBase parseFile;
+
+      final ParseObject bookModelObject = ParseObject(back4AppBooks)
+        ..objectId = bookModel.objectId
+        ..set('title', bookModel.title)
+        ..set('subtitle', bookModel.subtitle)
+        ..set('isbn', bookModel.isbn)
+        ..set('description', bookModel.description)
+        ..set('status', bookModel.status)
+        ..set('language', bookModel.language)
+        ..set('pageCount', bookModel.pageCount)
+        ..set('contentRating', bookModel.contentRating)
+        ..set('library', ParseObject(back4AppLibraries)..objectId = libraryId)
+        ..set('publisher',
+            ParseObject(back4AppPublishers)..objectId = publisherId);
+
+      if (photoBytes != null) {
+        parseFile = ParseWebFile(
+          photoBytes,
+          name: '${bookModel.title ?? ''}_thumbnail',
+        );
+
+        bookModelObject.set("thumbnail", parseFile);
+      }
+
+      final ParseResponse apiResponse = await bookModelObject.save();
+
+      if (apiResponse.success && bookModelObject.objectId != null) {
+        logger.i(
+            'Book updated successfully with ID: ${bookModelObject.objectId}');
+
+        return bookModelObject.objectId;
+      } else {
+        logger.e('Failed to update book: ${apiResponse.error}');
+        return null;
+      }
+    } catch (exception) {
+      logger.e('Error on updateBook: $exception');
+      throw CustomException(
+        code: errorOnBooksDatasource,
+        errorMessage: 'updateBook',
+      );
+    }
+  }
+
   Future<void> updateBookRelations({
     required String bookId,
     required List<String> authorIds,
     required List<String> categoriesIds,
-    required List<String> tags,
+    required List<String> tagsIds,
   }) async {
     try {
       logger.i('Updating relations for book $bookId');
@@ -473,7 +527,7 @@ class BooksDatasource {
       // Add Tags relation
       final ParseRelation<ParseObject> tagsRelation =
           bookModelObject.getRelation('tags');
-      for (String tagId in tags) {
+      for (String tagId in tagsIds) {
         tagsRelation.add(
           ParseObject(back4AppTags)..objectId = tagId,
         );

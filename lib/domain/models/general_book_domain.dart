@@ -11,7 +11,6 @@ class GeneralBookDomain extends BookDomain {
     required super.language,
     required super.status,
     super.publisher,
-    required super.publicationDate,
     required super.pageCount,
     required super.contentRating,
     super.rating,

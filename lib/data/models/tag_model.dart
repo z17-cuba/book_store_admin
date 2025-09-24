@@ -1,7 +1,7 @@
 import 'package:book_store_admin/data/models/parse_types/parse_pointer.dart';
 
-class TagsModel {
-  TagsModel({
+class TagModel {
+  TagModel({
     required this.className,
     required this.objectId,
     required this.createdAt,
@@ -17,8 +17,8 @@ class TagsModel {
   final String? name;
   final ParsePointer? library;
 
-  factory TagsModel.fromJson(Map<String, dynamic> json) {
-    return TagsModel(
+  factory TagModel.fromJson(Map<String, dynamic> json) {
+    return TagModel(
       className: json["className"],
       objectId: json["objectId"],
       createdAt: DateTime.tryParse(json["createdAt"] ?? ""),

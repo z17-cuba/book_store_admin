@@ -16,7 +16,7 @@ class AddEditTagDialog extends GetView<AddEditTagController> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(
-        controller.tagsModel != null ? 'app.editTag'.tr : 'app.addTag'.tr,
+        controller.tagModel != null ? 'app.editTag'.tr : 'app.addTag'.tr,
         style: textStyleAppBar,
       ),
       content: SizedBox(
@@ -70,7 +70,7 @@ class AddEditTagDialog extends GetView<AddEditTagController> {
           onPressed: () => controller.createEditTag(context),
           expand: false,
           title:
-              controller.tagsModel != null ? 'app.editTag'.tr : 'app.addTag'.tr,
+              controller.tagModel != null ? 'app.editTag'.tr : 'app.addTag'.tr,
           isFilled: true,
           color: Theme.of(context).highlightColor,
           textColor: Theme.of(context).canvasColor,

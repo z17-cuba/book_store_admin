@@ -1,7 +1,7 @@
 import 'package:book_store_admin/data/models/author_model.dart';
 import 'package:book_store_admin/data/models/category_model.dart';
 import 'package:book_store_admin/data/models/publisher_model.dart';
-import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
+import 'package:book_store_admin/data/models/tag_model.dart';
 
 class BookModel {
   BookModel({
@@ -16,7 +16,6 @@ class BookModel {
     required this.language,
     required this.status,
     this.publisher,
-    required this.publicationDate,
     required this.pageCount,
     required this.contentRating,
     required this.rating,
@@ -37,18 +36,17 @@ class BookModel {
   final String? language;
   final String? status;
   final PublisherModel? publisher;
-  final DateTime? publicationDate;
   final int? pageCount;
   final String? contentRating;
   final double? rating;
   final String? thumbnail;
-  final List<ParseObject>? tags;
+  final List<TagModel>? tags;
   final List<CategoryModel>? categories;
   final List<AuthorModel>? authors;
 
   factory BookModel.fromJson({
     required Map<String, dynamic> json,
-    required List<ParseObject> tags,
+    required List<TagModel> tags,
     required List<CategoryModel> categories,
     required List<AuthorModel> authors,
   }) {
@@ -66,9 +64,6 @@ class BookModel {
       publisher: json["publisher"] == null
           ? null
           : PublisherModel.fromJson(json["publisher"]),
-      publicationDate: json["publicationDate"] != null
-          ? DateTime.tryParse(json["publicationDate"]['iso'] ?? "")
-          : null,
       pageCount: json["pageCount"],
       contentRating: json["contentRating"],
       rating: json["rating"],
@@ -81,6 +76,6 @@ class BookModel {
 
   @override
   String toString() {
-    return "$className, $objectId, $createdAt, $updatedAt, $title, $subtitle, $isbn, $description, $language, $status, $publisher, $publicationDate, $pageCount, $contentRating, $rating, $thumbnail, $categories, $tags, $authors ";
+    return "$className, $objectId, $createdAt, $updatedAt, $title, $subtitle, $isbn, $description, $language, $status, $publisher, $pageCount, $contentRating, $rating, $thumbnail, $categories, $tags, $authors ";
   }
 }

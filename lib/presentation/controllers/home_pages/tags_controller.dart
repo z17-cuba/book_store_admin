@@ -1,5 +1,5 @@
 import 'package:book_store_admin/data/datasources/tags_datasource.dart';
-import 'package:book_store_admin/data/models/tags_model.dart';
+import 'package:book_store_admin/data/models/tag_model.dart';
 import 'package:book_store_admin/core/loading_overlay.dart';
 import 'package:book_store_admin/presentation/app/constants/constants.dart';
 import 'package:book_store_admin/presentation/app/theme/colors.dart';
@@ -24,7 +24,7 @@ class TagsController extends GetxController {
   final UserController userController;
 
   // -> Tags
-  final RxList<TagsModel> tagsByLibrary = <TagsModel>[].obs;
+  final RxList<TagModel> tagsByLibrary = <TagModel>[].obs;
   final RxBool isLoadingTags = true.obs;
   final RxBool noMoreTags = false.obs;
 
@@ -45,9 +45,9 @@ class TagsController extends GetxController {
 
   Future<void> addEditTag(
     BuildContext context,
-    TagsModel? tagsModel,
+    TagModel? tagModel,
   ) async {
-    AddEditTagBinding.init(tagsModel);
+    AddEditTagBinding.init(tagModel);
 
     await showDialog(
       context: context,
@@ -115,7 +115,7 @@ class TagsController extends GetxController {
     }
 
     if (!noMoreTags.value) {
-      List<TagsModel> tempResult = await tagsDatasource.getAllTagsByLibrary(
+      List<TagModel> tempResult = await tagsDatasource.getAllTagsByLibrary(
         skip: skip,
         libraryId: userController.library?.objectId ?? '',
       );
@@ -123,7 +123,7 @@ class TagsController extends GetxController {
       skip += limitQueries;
       noMoreTags.value = tempResult.isEmpty;
 
-      for (TagsModel tag in tempResult) {
+      for (TagModel tag in tempResult) {
         final bool hasTag =
             tagsByLibrary.any((t) => t.objectId == tag.objectId);
         if (!hasTag) {
@@ -153,7 +153,7 @@ class TagsDataGridSource extends DataGridSource {
     _buildDataGridRows();
   }
 
-  final List<TagsModel> tags;
+  final List<TagModel> tags;
   List<DataGridRow> _books = [];
 
   @override

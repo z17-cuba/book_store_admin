@@ -102,6 +102,7 @@ const Map<String, String> enUS = {
   'app.description': 'Description',
   'app.status': 'Status',
   'app.isbn': 'ISBN',
+  'app.notValidIsbn': 'Not a valid ISBN',
   'app.actions': 'Actions',
   'app.deleteBook': 'Delete book',
   'app.deleteBookWarning':

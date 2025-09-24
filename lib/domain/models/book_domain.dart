@@ -1,6 +1,7 @@
 import 'package:book_store_admin/core/enums.dart';
 import 'package:book_store_admin/domain/models/author_domain.dart';
 import 'package:book_store_admin/domain/models/category_domain.dart';
+import 'package:book_store_admin/domain/models/tag_domain.dart';
 
 abstract class BookDomain {
   BookDomain({
@@ -12,7 +13,6 @@ abstract class BookDomain {
     required this.language,
     required this.status,
     required this.publisher,
-    required this.publicationDate,
     required this.pageCount,
     required this.contentRating,
     required this.rating,
@@ -32,7 +32,6 @@ abstract class BookDomain {
   final String? language;
   final String? status;
   final String? publisher;
-  final DateTime? publicationDate;
   final int? pageCount;
   final String? contentRating;
   final double? rating;
@@ -40,7 +39,7 @@ abstract class BookDomain {
   final DateTime? createdAt;
   final DateTime? updatedAt;
   final List<CategoryDomain>? categories;
-  final List<String>? tags;
+  final List<TagDomain>? tags;
   final List<AuthorDomain>? authors;
 
   // Abstract method to get book type

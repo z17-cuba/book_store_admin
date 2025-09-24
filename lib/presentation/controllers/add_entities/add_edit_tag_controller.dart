@@ -1,6 +1,6 @@
 import 'package:book_store_admin/core/loading_overlay.dart';
 import 'package:book_store_admin/data/datasources/tags_datasource.dart';
-import 'package:book_store_admin/data/models/tags_model.dart';
+import 'package:book_store_admin/data/models/tag_model.dart';
 import 'package:book_store_admin/presentation/controllers/user_controller.dart';
 import 'package:book_store_admin/presentation/widgets/toast/toast_helper.dart';
 import 'package:book_store_admin/presentation/widgets/toast/toast_provider.dart';
@@ -11,12 +11,12 @@ class AddEditTagController extends GetxController {
   AddEditTagController({
     required this.tagsDatasource,
     required this.userController,
-    this.tagsModel,
+    this.tagModel,
   });
 
   final TagsDatasource tagsDatasource;
   final UserController userController;
-  TagsModel? tagsModel;
+  TagModel? tagModel;
 
   // Form controllers
   final TextEditingController nameController = TextEditingController();
@@ -26,8 +26,8 @@ class AddEditTagController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-    if (tagsModel != null) {
-      nameController.text = tagsModel?.name ?? '';
+    if (tagModel != null) {
+      nameController.text = tagModel?.name ?? '';
       update();
     }
   }
@@ -38,9 +38,9 @@ class AddEditTagController extends GetxController {
         LoadingOverlay.show(context: context);
         bool success = false;
 
-        if (tagsModel != null) {
+        if (tagModel != null) {
           success = await tagsDatasource.updateTag(
-            tagId: tagsModel?.objectId ?? '',
+            tagId: tagModel?.objectId ?? '',
             newName: nameController.text.trim(),
           );
         } else {
@@ -56,7 +56,7 @@ class AddEditTagController extends GetxController {
           ToastHelper.showToast(
             context: context,
             toast: ToastWithColor.success(
-              message: tagsModel != null
+              message: tagModel != null
                   ? 'app.editedTagSuccessfully'.tr
                   : 'app.createdTagSuccessfully'.tr,
             ),

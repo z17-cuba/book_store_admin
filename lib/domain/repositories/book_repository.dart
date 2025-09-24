@@ -157,11 +157,11 @@ class BookRepository {
     return response;
   }
 
-  Future<bool> createBook({
+  Future<bool> createOrUpdateBook({
     required BookDomain book,
     required List<String> authorIds,
     required List<String> categoriesIds,
-    required List<String> tags,
+    required List<String> tagsIds,
     required String libraryId,
     required BookType bookType,
     Uint8List? photoBytes,
@@ -175,18 +175,27 @@ class BookRepository {
     int? bitrate,
     int? sampleRate,
   }) async {
+    String? bookId;
     final BookModel bookModel = BookMapper.domainToModel(book);
 
-    final String? bookId = await booksDatasource.createBook(
-      bookModel: bookModel,
-      photoBytes: photoBytes,
-      authorIds: authorIds,
-      categoriesIds: categoriesIds,
-      tags: tags,
-      libraryId: libraryId,
-      bookType: book.bookType,
-      publisherId: publisherId,
-    );
+    if (book.bookId != null) {
+      bookId = await booksDatasource.createBook(
+        bookModel: bookModel,
+        photoBytes: photoBytes,
+        libraryId: libraryId,
+        bookType: book.bookType,
+        publisherId: publisherId,
+      );
+    } else {
+      bookId = book.bookId;
+      await booksDatasource.updateBook(
+        bookModel: bookModel,
+        photoBytes: photoBytes,
+        libraryId: libraryId,
+        bookType: book.bookType,
+        publisherId: publisherId,
+      );
+    }
 
     if (bookId != null && bookId.isNotEmpty) {
       // Update book relations
@@ -194,7 +203,7 @@ class BookRepository {
         bookId: bookId,
         authorIds: authorIds,
         categoriesIds: categoriesIds,
-        tags: tags,
+        tagsIds: tagsIds,
       );
 
       // Create Ebook or Audiobook if media is provided

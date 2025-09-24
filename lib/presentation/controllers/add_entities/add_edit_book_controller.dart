@@ -5,11 +5,13 @@ import 'package:book_store_admin/core/loading_overlay.dart';
 import 'package:book_store_admin/data/datasources/publisher_datasource.dart';
 import 'package:book_store_admin/data/datasources/tags_datasource.dart';
 import 'package:book_store_admin/data/models/publisher_model.dart';
-import 'package:book_store_admin/data/models/tags_model.dart';
+import 'package:book_store_admin/domain/mapper/tags_mapper.dart';
+import 'package:book_store_admin/domain/models/audiobook_domain.dart';
 import 'package:book_store_admin/domain/models/author_domain.dart';
 import 'package:book_store_admin/domain/models/book_domain.dart';
 import 'package:book_store_admin/domain/models/category_domain.dart';
 import 'package:book_store_admin/domain/models/general_book_domain.dart';
+import 'package:book_store_admin/domain/models/tag_domain.dart';
 import 'package:book_store_admin/domain/repositories/author_repository.dart';
 import 'package:book_store_admin/domain/repositories/book_repository.dart';
 import 'package:book_store_admin/domain/repositories/categories_repository.dart';
@@ -81,11 +83,11 @@ class AddEditBookController extends GetxController {
   RxBool isLoadingCategories = false.obs;
   final RxList<PublisherModel> publishers = <PublisherModel>[].obs;
   RxBool isLoadingPublishers = false.obs;
-  final RxList<TagsModel> tags = <TagsModel>[].obs;
+  final RxList<TagDomain> tags = <TagDomain>[].obs;
   RxBool isLoadingTags = false.obs;
   final RxList<AuthorDomain> selectedAuthors = <AuthorDomain>[].obs;
   final RxList<CategoryDomain> selectedCategories = <CategoryDomain>[].obs;
-  final RxList<TagsModel> selectedTags = <TagsModel>[].obs;
+  final RxList<TagDomain> selectedTags = <TagDomain>[].obs;
   Rx<PublisherModel?> publisher = Rx(null);
 
   @override
@@ -96,6 +98,29 @@ class AddEditBookController extends GetxController {
       _fetchAuthors(),
       _fetchTags(),
     ]);
+
+    if (book != null) {
+      titleController.text = book?.title ?? '';
+      subtitleController.text = book?.subtitle ?? '';
+      isbnController.text = book?.isbn ?? '';
+      descriptionController.text = book?.description ?? '';
+      languageController.text = book?.language ?? '';
+      pageCountController.text = book?.pageCount?.toString() ?? '';
+
+      selectedTags.value = book?.tags ?? [];
+      selectedAuthors.value = book?.authors ?? [];
+      selectedCategories.value = book?.categories ?? [];
+
+      status.value = BookStatus.valueOf(book?.status) ?? BookStatus.active;
+      type.value = book?.bookType ?? BookType.ebook;
+      contentRating.value = BookContentRating.valueOf(book?.contentRating) ??
+          BookContentRating.unrated;
+
+      if (book?.bookType == BookType.audiobook) {
+        narratorNameController.text =
+            (book as AudiobookDomain).narratorName ?? '';
+      }
+    }
     super.onInit();
   }
 
@@ -177,12 +202,12 @@ class AddEditBookController extends GetxController {
     }
   }
 
-  Future<void> createBook(BuildContext context) async {
+  Future<void> createOrUpdateBook(BuildContext context) async {
     try {
       if (formKey.currentState!.validate()) {
         LoadingOverlay.show(context: context);
 
-        final bool success = await bookRepository.createBook(
+        final bool success = await bookRepository.createOrUpdateBook(
           libraryId: userController.library?.objectId ?? '',
           bookType: type.value,
           book: GeneralBookDomain(
@@ -195,7 +220,6 @@ class AddEditBookController extends GetxController {
             pageCount: int.tryParse(pageCountController.text.trim()) ?? 0,
             contentRating: contentRating.value.name,
             status: status.value.name,
-            publicationDate: DateTime.now(),
           ),
           photoBytes: thumbnailBytes?.value,
           mediaBytes: selectedFile.value?.bytes,
@@ -207,12 +231,9 @@ class AddEditBookController extends GetxController {
           narratorName: narratorNameController.text.trim(),
           authorIds: selectedAuthors.map((e) => e.id).toList(),
           categoriesIds: selectedCategories.map((e) => e.id).toList(),
-          tags: [],
+          tagsIds: selectedTags.map((e) => e.id).toList(),
           publisherId: publisher.value?.objectId ?? '',
         );
-
-        // TODO publicationDate
-        // TODO tags
 
         if (success && context.mounted) {
           LoadingOverlay.hide(context: context);
@@ -239,7 +260,9 @@ class AddEditBookController extends GetxController {
     final result = await tagsDatasource.getAllTagsByLibrary(
       libraryId: userController.library?.objectId ?? '',
     );
-    tags.assignAll(result);
+    final List<TagDomain> tagDomains =
+        result.map((t) => TagsMapper.tagToDomain(t)).toList();
+    tags.assignAll(tagDomains);
     isLoadingTags.value = false;
   }
 

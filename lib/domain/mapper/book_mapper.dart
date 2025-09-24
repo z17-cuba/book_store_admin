@@ -4,6 +4,7 @@ import 'package:book_store_admin/data/models/ebook_model.dart';
 import 'package:book_store_admin/data/models/parse_book_model.dart';
 import 'package:book_store_admin/domain/mapper/author_mapper.dart';
 import 'package:book_store_admin/domain/mapper/categories_mapper.dart';
+import 'package:book_store_admin/domain/mapper/tags_mapper.dart';
 import 'package:book_store_admin/domain/models/audiobook_domain.dart';
 import 'package:book_store_admin/domain/models/book_domain.dart';
 import 'package:book_store_admin/domain/models/ebook_domain.dart';
@@ -25,7 +26,6 @@ class BookMapper {
       language: book.language,
       status: book.status,
       publisher: book.publisher?.name ?? '',
-      publicationDate: book.publicationDate,
       pageCount: book.pageCount?.toInt(),
       contentRating: book.contentRating,
       rating: book.rating,
@@ -35,7 +35,7 @@ class BookMapper {
       categories: book.categories
           ?.map((c) => CategoriesMapper.categoryToDomain(c))
           .toList(),
-      tags: book.tags?.map((t) => t['name'] as String).toList(),
+      tags: book.tags?.map((t) => TagsMapper.tagToDomain(t)).toList(),
       authors:
           book.authors?.map((a) => AuthorMapper.authorToDomain(a)).toList(),
       // Audiobook-specific fields
@@ -63,7 +63,6 @@ class BookMapper {
       language: book.language,
       status: book.status,
       publisher: book.publisher?.name ?? '',
-      publicationDate: book.publicationDate,
       pageCount: book.pageCount?.toInt(),
       contentRating: book.contentRating,
       rating: book.rating,
@@ -73,7 +72,7 @@ class BookMapper {
       categories: book.categories
           ?.map((c) => CategoriesMapper.categoryToDomain(c))
           .toList(),
-      tags: book.tags?.map((t) => t['name'] as String).toList(),
+      tags: book.tags?.map((t) => TagsMapper.tagToDomain(t)).toList(),
       authors:
           book.authors?.map((a) => AuthorMapper.authorToDomain(a)).toList(),
       // Ebook-specific fields
@@ -97,7 +96,6 @@ class BookMapper {
       language: book.language,
       status: book.status,
       publisher: book.publisher?.name ?? '',
-      publicationDate: book.publicationDate,
       pageCount: book.pageCount?.toInt(),
       contentRating: book.contentRating,
       rating: book.rating,
@@ -107,7 +105,7 @@ class BookMapper {
       categories: book.categories
           ?.map((c) => CategoriesMapper.categoryToDomain(c))
           .toList(),
-      tags: book.tags?.map((t) => t['name'] as String).toList(),
+      tags: book.tags?.map((t) => TagsMapper.tagToDomain(t)).toList(),
       authors:
           book.authors?.map((a) => AuthorMapper.authorToDomain(a)).toList(),
     );
@@ -217,7 +215,6 @@ class BookMapper {
       description: book.description,
       language: book.language,
       status: book.status,
-      publicationDate: book.publicationDate,
       pageCount: book.pageCount,
       contentRating: book.contentRating,
       rating: book.rating,

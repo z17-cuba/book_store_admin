@@ -11,7 +11,6 @@ class AudiobookDomain extends BookDomain {
     required super.language,
     required super.status,
     required super.publisher,
-    required super.publicationDate,
     required super.pageCount,
     required super.contentRating,
     required super.rating,

@@ -1,5 +1,5 @@
 import 'package:book_store_admin/core/custom_exception.dart';
-import 'package:book_store_admin/data/models/tags_model.dart';
+import 'package:book_store_admin/data/models/tag_model.dart';
 import 'package:book_store_admin/presentation/app/constants/constants.dart';
 import 'package:logger/logger.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
@@ -14,7 +14,7 @@ class TagsDatasource {
   final Logger logger;
 
   /// Fetches all tags associated with a specific library.
-  Future<List<TagsModel>> getAllTagsByLibrary({
+  Future<List<TagModel>> getAllTagsByLibrary({
     int? skip,
     required String libraryId,
   }) async {
@@ -35,7 +35,7 @@ class TagsDatasource {
 
       if (response.success && response.results != null) {
         return response.results!
-            .map((e) => TagsModel.fromJson(e.toJson()))
+            .map((e) => TagModel.fromJson(e.toJson()))
             .toList();
       }
       return [];

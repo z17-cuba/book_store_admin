@@ -3,6 +3,7 @@ import 'package:book_store_admin/data/datasources/parse_base_datasource.dart';
 import 'package:book_store_admin/data/models/author_model.dart';
 import 'package:book_store_admin/data/models/category_model.dart';
 import 'package:book_store_admin/data/models/parse_book_model.dart';
+import 'package:book_store_admin/data/models/tag_model.dart';
 import 'package:book_store_admin/presentation/app/constants/constants.dart';
 import 'package:logger/logger.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
@@ -65,20 +66,27 @@ class AudiobooksDatasource {
               book,
               'tags',
             );
+
+            final List<ParseObject> categories =
+                await ParseBaseDatasource.getRelationObjects(
+              book,
+              'categories',
+            );
             final List<ParseObject> authors =
                 await ParseBaseDatasource.getRelationObjects(
               book,
               'authors',
             );
-
             audiobooks.add(
               ParseBookModel(
                 book: parseObject,
                 authors: authors
                     .map((a) => AuthorModel.fromJson(a.toJson()))
                     .toList(),
-                categories: [],
-                tags: tags,
+                categories: categories
+                    .map((c) => CategoryModel.fromJson(c.toJson()))
+                    .toList(),
+                tags: tags.map((t) => TagModel.fromJson(t.toJson())).toList(),
               ),
             );
           }
@@ -148,7 +156,7 @@ class AudiobooksDatasource {
               categories: categories
                   .map((c) => CategoryModel.fromJson(c.toJson()))
                   .toList(),
-              tags: tags,
+              tags: tags.map((t) => TagModel.fromJson(t.toJson())).toList(),
             );
           }
         }
@@ -215,7 +223,7 @@ class AudiobooksDatasource {
               categories: categories
                   .map((c) => CategoryModel.fromJson(c.toJson()))
                   .toList(),
-              tags: tags,
+              tags: tags.map((t) => TagModel.fromJson(t.toJson())).toList(),
             );
           }
         }

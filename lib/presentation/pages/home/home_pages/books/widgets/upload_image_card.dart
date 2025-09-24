@@ -61,10 +61,11 @@ class CircleImageCard extends StatelessWidget {
                         child: GestureDetector(
                           onTap: onSelectNewFile,
                           child: CacheNetworkImageWidgetWithShimmer(
-                              containerWidth: double.infinity,
-                              containerHeight: 0.5.sh,
-                              urlImage: imageUrl!,
-                              fit: BoxFit.cover),
+                            containerWidth: double.infinity,
+                            containerHeight: 0.5.sh,
+                            urlImage: imageUrl!,
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                     )
@@ -102,7 +103,7 @@ class CircleImageCard extends StatelessWidget {
                           imageBytes,
                           height: 0.5.sh,
                           width: double.infinity,
-                          fit: BoxFit.cover,
+                          fit: BoxFit.contain,
                         ),
                       ),
                     ),
