@@ -1,6 +1,6 @@
 import 'package:book_store_admin/core/validator.dart';
 import 'package:book_store_admin/presentation/app/theme/text_styles.dart';
-import 'package:book_store_admin/presentation/controllers/edit_user_and_library_controller.dart';
+import 'package:book_store_admin/presentation/controllers/home_pages/edit_user_and_library_controller.dart';
 import 'package:book_store_admin/presentation/widgets/custom_text_form_field.dart';
 import 'package:book_store_admin/presentation/widgets/primary_button.dart';
 import 'package:flutter/material.dart';

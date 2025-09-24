@@ -141,6 +141,18 @@ const Map<String, String> esEs = {
   'app.notifications': 'Notificaciones',
   'app.noNotifications': 'No tiene notificaciones por ahora',
 
+  // Tags
+  'app.tags': 'Etiquetas',
+  'app.name': 'Nombre',
+  'app.noTags': 'No hay etiquetas',
+  'app.editTag': 'Editar etiqueta',
+  'app.addTag': 'Agregar etiqueta',
+  'app.deleteTag': 'Eliminar etiqueta',
+  'app.editedTagSuccessfully': 'La etiqueta se ha creado satisfactoriamente',
+  'app.createdTagSuccessfully': 'La etiqueta se ha creado satisfactoriamente',
+  'app.deleteTagWarning':
+      '¿Seguro que desea eliminar la etiqueta "@title"? Esto también eliminará la etiqueta asociada a cualquier libro. Esta acción no se puede deshacer.',
+
   // Book Details
   'app.ebookInfo': 'Información del libro electrónico',
   'app.audiobookInfo': 'Información del audiolibro',

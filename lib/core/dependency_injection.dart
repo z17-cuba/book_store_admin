@@ -11,6 +11,7 @@ import 'package:book_store_admin/data/datasources/categories_datasource.dart';
 import 'package:book_store_admin/data/datasources/ebooks_datasource.dart';
 import 'package:book_store_admin/data/datasources/publisher_datasource.dart';
 import 'package:book_store_admin/data/datasources/reading_progress_datasource.dart';
+import 'package:book_store_admin/data/datasources/tags_datasource.dart';
 import 'package:book_store_admin/data/datasources/user_datasource.dart';
 import 'package:book_store_admin/domain/repositories/author_repository.dart';
 import 'package:book_store_admin/domain/repositories/book_repository.dart';
@@ -108,6 +109,13 @@ class DependencyInjection {
       )
       ..lazyPut<LibraryDatasource>(
         () => LibraryDatasource(
+          parse: parse,
+          logger: Get.find<Logger>(),
+        ),
+        fenix: true,
+      )
+      ..lazyPut<TagsDatasource>(
+        () => TagsDatasource(
           parse: parse,
           logger: Get.find<Logger>(),
         ),

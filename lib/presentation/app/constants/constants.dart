@@ -103,4 +103,5 @@ const int errorOnReadingProgressDatasource = 112;
 const int errorOnUserDatasource = 113;
 const int errorOnPublisherDatasource = 114;
 const int errorOnAuthorDatasource = 115;
+const int errorOnTagsDatasource = 116;
 const int secureStorageErrorCode = 140;

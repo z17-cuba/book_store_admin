@@ -1,6 +1,6 @@
 import 'package:book_store_admin/presentation/app/constants/constants.dart';
 import 'package:book_store_admin/presentation/app/theme/colors.dart';
-import 'package:book_store_admin/presentation/controllers/books_controller.dart';
+import 'package:book_store_admin/presentation/controllers/home_pages/books_controller.dart';
 import 'package:book_store_admin/presentation/widgets/primary_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

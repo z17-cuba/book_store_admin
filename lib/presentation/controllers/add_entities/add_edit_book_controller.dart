@@ -3,7 +3,9 @@ import 'dart:typed_data';
 import 'package:book_store_admin/core/enums.dart';
 import 'package:book_store_admin/core/loading_overlay.dart';
 import 'package:book_store_admin/data/datasources/publisher_datasource.dart';
+import 'package:book_store_admin/data/datasources/tags_datasource.dart';
 import 'package:book_store_admin/data/models/publisher_model.dart';
+import 'package:book_store_admin/data/models/tags_model.dart';
 import 'package:book_store_admin/domain/models/author_domain.dart';
 import 'package:book_store_admin/domain/models/book_domain.dart';
 import 'package:book_store_admin/domain/models/category_domain.dart';
@@ -27,6 +29,7 @@ class AddEditBookController extends GetxController {
     this.book,
     this.bookId,
     required this.categoriesRepository,
+    required this.tagsDatasource,
     required this.publisherDatasource,
     required this.authorRepository,
     required this.bookRepository,
@@ -36,6 +39,7 @@ class AddEditBookController extends GetxController {
   final BookRepository bookRepository;
   final UserController userController;
   final CategoriesRepository categoriesRepository;
+  final TagsDatasource tagsDatasource;
   final PublisherDatasource publisherDatasource;
   final AuthorRepository authorRepository;
   final String? bookId;
@@ -77,8 +81,11 @@ class AddEditBookController extends GetxController {
   RxBool isLoadingCategories = false.obs;
   final RxList<PublisherModel> publishers = <PublisherModel>[].obs;
   RxBool isLoadingPublishers = false.obs;
+  final RxList<TagsModel> tags = <TagsModel>[].obs;
+  RxBool isLoadingTags = false.obs;
   final RxList<AuthorDomain> selectedAuthors = <AuthorDomain>[].obs;
   final RxList<CategoryDomain> selectedCategories = <CategoryDomain>[].obs;
+  final RxList<TagsModel> selectedTags = <TagsModel>[].obs;
   Rx<PublisherModel?> publisher = Rx(null);
 
   @override
@@ -87,6 +94,7 @@ class AddEditBookController extends GetxController {
       _fetchPublishers(),
       _fetchCategories(),
       _fetchAuthors(),
+      _fetchTags(),
     ]);
     super.onInit();
   }
@@ -224,6 +232,15 @@ class AddEditBookController extends GetxController {
         LoadingOverlay.hide(context: context);
       }
     }
+  }
+
+  Future<void> _fetchTags() async {
+    isLoadingTags.value = true;
+    final result = await tagsDatasource.getAllTagsByLibrary(
+      libraryId: userController.library?.objectId ?? '',
+    );
+    tags.assignAll(result);
+    isLoadingTags.value = false;
   }
 
   Future<void> _fetchAuthors() async {

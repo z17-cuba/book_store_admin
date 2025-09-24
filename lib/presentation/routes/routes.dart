@@ -21,6 +21,7 @@ class Routes {
   //#region Home
   static const dashboard = "dashboard";
   static const books = "books";
+  static const tags = "tags";
 
   //#endregion Home
 }

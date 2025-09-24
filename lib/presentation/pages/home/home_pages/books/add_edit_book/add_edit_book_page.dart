@@ -4,6 +4,7 @@ import 'package:book_store_admin/core/enums.dart';
 import 'package:book_store_admin/core/validator.dart';
 import 'package:book_store_admin/core/auxiliary_functions.dart';
 import 'package:book_store_admin/data/models/publisher_model.dart';
+import 'package:book_store_admin/data/models/tags_model.dart';
 import 'package:book_store_admin/domain/models/author_domain.dart';
 import 'package:book_store_admin/domain/models/category_domain.dart';
 import 'package:book_store_admin/presentation/app/constants/constants.dart';
@@ -188,20 +189,46 @@ class AddEditBookPage extends GetView<AddEditBookController> {
                         ),
                 ),
                 20.verticalSpace,
-                // Categories
-                Obx(
-                  () => controller.isLoadingCategories.value
-                      ? const CircularProgressIndicator()
-                      : _buildMultiSelect<CategoryDomain>(
-                          context: context,
-                          label: 'app.categories'.tr,
-                          items: controller.categories,
-                          selectedItems: controller.selectedCategories,
-                          onConfirm: (values) {
-                            controller.selectedCategories.assignAll(values);
-                          },
-                          displayItem: (category) => 'app.${category.name}'.tr,
-                        ),
+                Row(
+                  children: [
+                    // Tags
+                    Expanded(
+                      child: Obx(
+                        () => controller.isLoadingTags.value
+                            ? const Center(child: CircularProgressIndicator())
+                            : _buildMultiSelect<TagsModel>(
+                                context: context,
+                                label: 'app.tags'.tr,
+                                items: controller.tags,
+                                selectedItems: controller.selectedTags,
+                                onConfirm: (values) {
+                                  controller.selectedTags.assignAll(values);
+                                },
+                                displayItem: (tag) => tag.name ?? '',
+                              ),
+                      ),
+                    ),
+                    20.horizontalSpace,
+                    // Categories
+                    Expanded(
+                      child: Obx(
+                        () => controller.isLoadingCategories.value
+                            ? const Center(child: CircularProgressIndicator())
+                            : _buildMultiSelect<CategoryDomain>(
+                                context: context,
+                                label: 'app.categories'.tr,
+                                items: controller.categories,
+                                selectedItems: controller.selectedCategories,
+                                onConfirm: (values) {
+                                  controller.selectedCategories
+                                      .assignAll(values);
+                                },
+                                displayItem: (category) =>
+                                    'app.${category.name}'.tr,
+                              ),
+                      ),
+                    ),
+                  ],
                 ),
                 20.verticalSpace,
                 // Content Rating - Status

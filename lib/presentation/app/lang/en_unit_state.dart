@@ -137,6 +137,18 @@ const Map<String, String> enUS = {
   'app.notifications': 'Notifications',
   'app.noNotifications': 'There are currently no notifications for you.',
 
+  // Tags
+  'app.tags': 'Tags',
+  'app.name': 'Name',
+  'app.noTags': 'No tags',
+  'app.editTag': 'Edit tag',
+  'app.addTag': 'Add tag',
+  'app.deleteTag': 'Delete tag',
+  'app.editedTagSuccessfully': 'Tag edited successfully',
+  'app.createdTagSuccessfully': 'Tag created successfully',
+  'app.deleteTagWarning':
+      'Are you sure you want to delete the tag "@title"? This will also delete the tag associated with any book. This action cannot be undone.',
+
   // Book Details
   'app.ebookInfo': 'Ebook info',
   'app.audiobookInfo': 'Audiobook info',

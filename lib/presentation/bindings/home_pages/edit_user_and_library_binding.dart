@@ -1,6 +1,6 @@
 import 'package:book_store_admin/data/datasources/library_datasource.dart';
 import 'package:book_store_admin/data/datasources/user_datasource.dart';
-import 'package:book_store_admin/presentation/controllers/edit_user_and_library_controller.dart';
+import 'package:book_store_admin/presentation/controllers/home_pages/edit_user_and_library_controller.dart';
 import 'package:book_store_admin/presentation/controllers/user_controller.dart';
 import 'package:get/get.dart';
 

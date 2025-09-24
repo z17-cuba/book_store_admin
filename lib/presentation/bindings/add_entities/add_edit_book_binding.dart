@@ -1,4 +1,5 @@
 import 'package:book_store_admin/data/datasources/publisher_datasource.dart';
+import 'package:book_store_admin/data/datasources/tags_datasource.dart';
 import 'package:book_store_admin/domain/models/book_domain.dart';
 import 'package:book_store_admin/domain/repositories/author_repository.dart';
 import 'package:book_store_admin/domain/repositories/book_repository.dart';
@@ -20,6 +21,7 @@ class AddEditBookBinding {
         bookId: bookId,
         authorRepository: Get.find<AuthorRepository>(),
         categoriesRepository: Get.find<CategoriesRepository>(),
+        tagsDatasource: Get.find<TagsDatasource>(),
         publisherDatasource: Get.find<PublisherDatasource>(),
         bookRepository: Get.find<BookRepository>(),
         userController: Get.find<UserController>(),

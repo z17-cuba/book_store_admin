@@ -10,8 +10,8 @@ import 'package:book_store_admin/presentation/controllers/login_register/create_
 import 'package:book_store_admin/presentation/pages/home/home_pages/widgets/change_password_dialog.dart';
 import 'package:book_store_admin/presentation/routes/navigator_helper.dart';
 import 'package:book_store_admin/presentation/routes/routes.dart';
-import 'package:book_store_admin/presentation/bindings/edit_user_and_library_binding.dart';
-import 'package:book_store_admin/presentation/controllers/edit_user_and_library_controller.dart';
+import 'package:book_store_admin/presentation/bindings/home_pages/edit_user_and_library_binding.dart';
+import 'package:book_store_admin/presentation/controllers/home_pages/edit_user_and_library_controller.dart';
 import 'package:book_store_admin/presentation/pages/home/home_pages/widgets/edit_user_and_library_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

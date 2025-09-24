@@ -1,69 +1,53 @@
 import 'package:book_store_admin/presentation/app/constants/constants.dart';
 import 'package:book_store_admin/presentation/app/theme/colors.dart';
 import 'package:book_store_admin/presentation/app/theme/text_styles.dart';
-import 'package:book_store_admin/presentation/controllers/home_pages/books_controller.dart';
-import 'package:book_store_admin/presentation/pages/home/home_pages/books/categories_books_scroll_widget.dart';
+import 'package:book_store_admin/presentation/controllers/home_pages/tags_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
-class BooksPage extends GetView<BooksController> {
-  const BooksPage({
+class TagsPage extends GetView<TagsController> {
+  const TagsPage({
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<BooksController>(
-      builder: (controller) => Padding(
+    return GetBuilder<TagsController>(builder: (controller) {
+      return Padding(
         padding: const EdgeInsets.all(
           pagePaddingHorizontal,
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // Book page header - Actions
+            // Tags page header - Actions
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'app.books'.tr,
+                  'app.tags'.tr,
                   style: textStyleAppBar,
                 ),
                 Row(
                   children: [
                     IconButton(
                       tooltip: 'app.refresh'.tr,
-                      onPressed: () async => await controller
-                          .loadBooksByLibrary(shouldRefresh: true),
+                      onPressed: () async => await controller.loadTagsByLibrary(
+                        shouldRefresh: true,
+                      ),
                       icon: HugeIcon(
                         icon: HugeIcons.strokeRoundedRefresh,
                         color: Theme.of(context).highlightColor,
                       ),
                     ),
                     IconButton(
-                      tooltip: 'app.addBook'.tr,
-                      onPressed: () => controller.addBook(context),
+                      tooltip: 'app.addTag'.tr,
+                      onPressed: () => controller.addEditTag(context, null),
                       icon: HugeIcon(
                         icon: HugeIcons.strokeRoundedAddCircle,
-                        color: Theme.of(context).highlightColor,
-                      ),
-                    ),
-                    IconButton(
-                      tooltip: 'app.addAuthor'.tr,
-                      onPressed: () => controller.addAuthor(context),
-                      icon: HugeIcon(
-                        icon: HugeIcons.strokeRoundedUserAdd01,
-                        color: Theme.of(context).highlightColor,
-                      ),
-                    ),
-                    IconButton(
-                      tooltip: 'app.addPublisher'.tr,
-                      onPressed: () => controller.addPublisher(context),
-                      icon: HugeIcon(
-                        icon: HugeIcons.strokeRoundedPenToolAdd,
                         color: Theme.of(context).highlightColor,
                       ),
                     ),
@@ -73,23 +57,22 @@ class BooksPage extends GetView<BooksController> {
             ),
             // Categories
             10.verticalSpace,
-            const CategoriesBooksScrollWidget(),
-            // Books table
+            // Tags table
             Expanded(
               child: SfDataGrid(
                 allowSorting: true,
                 controller: controller.dataGridController,
                 placeholder: Center(
-                  child: Text('app.noBooks'.tr),
+                  child: Text('app.noTags'.tr),
                 ),
-                source: controller.booksDataSource,
+                source: controller.tagsDataGridSource,
                 columnWidthMode: ColumnWidthMode.fill,
                 loadMoreViewBuilder: (
                   BuildContext context,
                   LoadMoreRows loadMoreRows,
                 ) {
                   Future<String> loadRows() async {
-                    await controller.loadBooksByLibrary();
+                    await controller.loadTagsByLibrary();
                     return Future<String>.value('Completed');
                   }
 
@@ -117,70 +100,14 @@ class BooksPage extends GetView<BooksController> {
                 },
                 columns: <GridColumn>[
                   GridColumn(
-                    width: iconSize * 1.5,
-                    columnName: 'type',
-                    label: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: pagePaddingHorizontal,
-                        vertical: 8.0,
-                      ),
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'app.type'.tr,
-                        style: textStyleBodyBold,
-                      ),
-                    ),
-                  ),
-                  GridColumn(
-                    columnName: 'title',
+                    columnName: 'name',
                     label: Container(
                       padding: const EdgeInsets.all(
                         pagePaddingHorizontal,
                       ),
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        'app.title'.tr,
-                        style: textStyleBodyBold,
-                      ),
-                    ),
-                  ),
-                  GridColumn(
-                    columnName: 'authors',
-                    label: Container(
-                      padding: const EdgeInsets.all(
-                        pagePaddingHorizontal,
-                      ),
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'app.authorsPlural'.tr,
-                        style: textStyleBodyBold,
-                      ),
-                    ),
-                  ),
-                  GridColumn(
-                    columnName: 'isbn',
-                    label: Container(
-                      padding: const EdgeInsets.all(
-                        pagePaddingHorizontal,
-                      ),
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'app.isbn'.tr,
-                        style: textStyleBodyBold,
-                      ),
-                    ),
-                  ),
-                  GridColumn(
-                    minimumWidth: 110,
-                    maximumWidth: 110,
-                    columnName: 'status',
-                    label: Container(
-                      padding: const EdgeInsets.all(
-                        pagePaddingHorizontal,
-                      ),
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'app.status'.tr,
+                        'app.name'.tr,
                         style: textStyleBodyBold,
                       ),
                     ),
@@ -205,7 +132,7 @@ class BooksPage extends GetView<BooksController> {
             ),
           ],
         ),
-      ),
-    );
+      );
+    });
   }
 }
