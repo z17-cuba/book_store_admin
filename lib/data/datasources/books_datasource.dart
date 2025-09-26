@@ -413,7 +413,7 @@ class BooksDatasource {
       if (photoBytes != null) {
         parseFile = ParseWebFile(
           photoBytes,
-          name: '${bookModel.title ?? ''}_thumbnail',
+          name: 'Book_${bookModel.title ?? ''}_thumbnail',
         );
 
         bookModelObject.set("thumbnail", parseFile);
@@ -468,7 +468,7 @@ class BooksDatasource {
       if (photoBytes != null) {
         parseFile = ParseWebFile(
           photoBytes,
-          name: '${bookModel.title ?? ''}_thumbnail',
+          name: 'Book_${bookModel.title ?? ''}_thumbnail',
         );
 
         bookModelObject.set("thumbnail", parseFile);
