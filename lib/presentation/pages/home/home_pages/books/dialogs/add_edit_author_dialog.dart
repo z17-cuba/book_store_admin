@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:book_store_admin/core/validator.dart';
 import 'package:book_store_admin/presentation/app/theme/colors.dart';
 import 'package:book_store_admin/presentation/app/theme/text_styles.dart';
-import 'package:book_store_admin/presentation/controllers/add_entities/add_author_controller.dart';
+import 'package:book_store_admin/presentation/controllers/add_entities/add_edit_author_controller.dart';
 import 'package:book_store_admin/presentation/pages/home/home_pages/books/widgets/upload_image_card.dart';
 import 'package:book_store_admin/presentation/widgets/custom_text_form_field.dart';
 import 'package:book_store_admin/presentation/widgets/primary_button.dart';
@@ -12,14 +12,16 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:hugeicons/hugeicons.dart';
 
-class AddAuthorDialog extends GetView<AddAuthorController> {
-  const AddAuthorDialog({super.key});
+class AddEditAuthorDialog extends GetView<AddEditAuthorController> {
+  const AddEditAuthorDialog({super.key});
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(
-        'app.addAuthor'.tr,
+        controller.authorDomain != null
+            ? 'app.editAuthor'.tr
+            : 'app.addAuthor'.tr,
         style: textStyleAppBar,
       ),
       content: SizedBox(
@@ -42,6 +44,7 @@ class AddAuthorDialog extends GetView<AddAuthorController> {
                 // Photo
                 Obx(
                   () => CircleImageCard(
+                    imageUrl: controller.authorDomain?.photoUrl,
                     imageBytes: controller.photoBytes?.value ?? Uint8List(0),
                     onSelectNewFile: () async => await controller.selectFile(),
                   ),
@@ -129,9 +132,11 @@ class AddAuthorDialog extends GetView<AddAuthorController> {
           child: Text('app.cancel'.tr),
         ),
         PrimaryButton(
-          onPressed: () => controller.createAuthor(context),
+          onPressed: () => controller.createEditAuthor(context),
           expand: false,
-          title: 'app.addAuthor'.tr,
+          title: controller.authorDomain != null
+              ? 'app.editAuthor'.tr
+              : 'app.addAuthor'.tr,
           isFilled: true,
           color: Theme.of(context).highlightColor,
           textColor: Theme.of(context).canvasColor,

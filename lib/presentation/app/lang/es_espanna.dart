@@ -133,6 +133,7 @@ const Map<String, String> esEs = {
   'app.adult': 'Adulto (18+)',
   'app.unrated': 'Sin clasificar',
   'app.createdBookSuccessfully': 'El libro se ha creado satisfactoriamente',
+  'app.editedBookSuccessfully': 'El libro se ha editado satisfactoriamente',
   'app.narratorName': 'Nombre del narrador',
   'app.subtitle': 'Subtítulo',
   'app.createBook': 'Crear libro',
@@ -174,6 +175,7 @@ const Map<String, String> esEs = {
   'app.copy': 'Copiar',
   'app.share': 'Compartir',
   'app.and': 'y',
+  'app.totalDurationInSeconds': 'Duración en segundos',
 
   //USER
   'app.language': 'Lenguaje',
@@ -184,6 +186,15 @@ const Map<String, String> esEs = {
   'app.es': 'Español',
   'app.en': 'Inglés',
   'app.changePassword': 'Cambiar contraseña',
+
+  // Authors
+  'app.authors': 'Autores',
+  'app.noAuthors': 'No hay autores',
+  'app.editAuthor': 'Editar autor',
+  'app.deleteAuthor': 'Eliminar autor',
+  'app.editedAuthorSuccessfully': 'El autor se ha editado satisfactoriamente',
+  'app.deleteAuthorWarning':
+      '¿Seguro que desea eliminar el autor "@title"? Esto también eliminará el autor si está asociado a cualquier libro. Esta acción no se puede deshacer.',
 
   // Settings
   'app.settings': 'Ajustes',

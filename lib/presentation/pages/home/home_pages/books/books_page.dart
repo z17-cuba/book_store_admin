@@ -52,14 +52,6 @@ class BooksPage extends GetView<BooksController> {
                       ),
                     ),
                     IconButton(
-                      tooltip: 'app.addAuthor'.tr,
-                      onPressed: () => controller.addAuthor(context),
-                      icon: HugeIcon(
-                        icon: HugeIcons.strokeRoundedUserAdd01,
-                        color: Theme.of(context).highlightColor,
-                      ),
-                    ),
-                    IconButton(
                       tooltip: 'app.addPublisher'.tr,
                       onPressed: () => controller.addPublisher(context),
                       icon: HugeIcon(

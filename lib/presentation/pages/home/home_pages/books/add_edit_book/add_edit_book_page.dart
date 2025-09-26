@@ -211,7 +211,7 @@ class AddEditBookPage extends GetView<AddEditBookController> {
                           onConfirm: (values) {
                             controller.selectedAuthors.assignAll(values);
                           },
-                          displayItem: (author) => author.name ?? '',
+                          displayItem: (author) => author.fullName,
                         ),
                 ),
                 20.verticalSpace,
@@ -350,7 +350,7 @@ class AddEditBookPage extends GetView<AddEditBookController> {
                     helperText: controller.type.value == BookType.ebook
                         ? 'app.pressTheIconToUploadAnEbook'.tr
                         : 'app.pressTheIconToUploadAnAudiobook'.tr,
-                    onSelectNewFile: controller.selectFile,
+                    onSelectNewFile: () => controller.selectFile(context),
                     fileName: controller.selectedFile.value?.name,
                     fileSize: controller.selectedFile.value != null
                         ? '${(controller.selectedFile.value!.size / (1024 * 1024)).toStringAsFixed(2)} MB'
@@ -358,31 +358,93 @@ class AddEditBookPage extends GetView<AddEditBookController> {
                   ),
                 ),
                 20.verticalSpace,
-                // Narrator name
                 Obx(
                   () => controller.type.value == BookType.audiobook
-                      ? CustomTextFormField(
-                          controller: controller.narratorNameController,
-                          keyboardType: TextInputType.name,
-                          textInputAction: TextInputAction.next,
-                          labelText: 'app.narratorName'.tr,
-                          prefixIcon: HugeIcon(
-                            icon: HugeIcons.strokeRoundedMenu01,
-                            color: Theme.of(context).highlightColor,
-                          ),
-                          suffixIcon: const HugeIcon(
-                            icon: HugeIcons.strokeRoundedAsterisk02,
-                            color: AppColors.redError,
-                          ),
-                          labelTextColor: Theme.of(context).highlightColor,
-                          validator: (value) => Validator.notEmpty(
-                            value,
-                            'app.fieldIsEmpty'.tr,
-                          ),
+                      ? Column(
+                          children: [
+                            // Narrator name - Total Duration
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: CustomTextFormField(
+                                    controller:
+                                        controller.narratorNameController,
+                                    keyboardType: TextInputType.name,
+                                    textInputAction: TextInputAction.next,
+                                    labelText: 'app.narratorName'.tr,
+                                    prefixIcon: HugeIcon(
+                                      icon: HugeIcons.strokeRoundedMenu01,
+                                      color: Theme.of(context).highlightColor,
+                                    ),
+                                    suffixIcon: const HugeIcon(
+                                      icon: HugeIcons.strokeRoundedAsterisk02,
+                                      color: AppColors.redError,
+                                    ),
+                                    labelTextColor:
+                                        Theme.of(context).highlightColor,
+                                    validator: (value) => Validator.notEmpty(
+                                      value,
+                                      'app.fieldIsEmpty'.tr,
+                                    ),
+                                  ),
+                                ),
+                                20.horizontalSpace,
+                                Expanded(
+                                  child: CustomTextFormField(
+                                    controller: controller.durationController,
+                                    keyboardType: TextInputType.name,
+                                    textInputAction: TextInputAction.next,
+                                    labelText: 'app.totalDurationInSeconds'.tr,
+                                    prefixIcon: HugeIcon(
+                                      icon: HugeIcons.strokeRoundedMenu01,
+                                      color: Theme.of(context).highlightColor,
+                                    ),
+                                    labelTextColor:
+                                        Theme.of(context).highlightColor,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            20.verticalSpace,
+                            // Samplerate - Bitrate
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: CustomTextFormField(
+                                    controller: controller.sampleRateController,
+                                    keyboardType: TextInputType.name,
+                                    textInputAction: TextInputAction.next,
+                                    labelText: 'app.sampleRate'.tr,
+                                    prefixIcon: HugeIcon(
+                                      icon: HugeIcons.strokeRoundedMenu01,
+                                      color: Theme.of(context).highlightColor,
+                                    ),
+                                    labelTextColor:
+                                        Theme.of(context).highlightColor,
+                                  ),
+                                ),
+                                20.horizontalSpace,
+                                Expanded(
+                                  child: CustomTextFormField(
+                                    controller: controller.bitRateController,
+                                    keyboardType: TextInputType.name,
+                                    textInputAction: TextInputAction.next,
+                                    labelText: 'app.bitrate'.tr,
+                                    prefixIcon: HugeIcon(
+                                      icon: HugeIcons.strokeRoundedMenu01,
+                                      color: Theme.of(context).highlightColor,
+                                    ),
+                                    labelTextColor:
+                                        Theme.of(context).highlightColor,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            20.verticalSpace,
+                          ],
                         )
-                      : const SizedBox(),
+                      : const SizedBox.shrink(),
                 ),
-                20.verticalSpace,
                 Obx(
                   () => PrimaryButton(
                     onPressed: () => controller.createOrUpdateBook(context),

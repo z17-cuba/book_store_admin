@@ -129,6 +129,7 @@ const Map<String, String> enUS = {
   'app.adult': 'Adult (18+)',
   'app.unrated': 'Unrated',
   'app.createdBookSuccessfully': 'Book created successfully',
+  'app.editedBookSuccessfully': 'Book edited successfully',
   'app.narratorName': 'Narrator name',
   'app.subtitle': 'Subtitle',
   'app.createBook': 'Create book',
@@ -171,6 +172,7 @@ const Map<String, String> enUS = {
   'app.copy': 'Copy',
   'app.share': 'Share',
   'app.and': 'and',
+  'app.totalDurationInSeconds': 'Duration in seconds',
 
   //USER
   'app.language': 'Language',
@@ -181,6 +183,14 @@ const Map<String, String> enUS = {
   'app.es': 'Spanish',
   'app.en': 'English',
   'app.changePassword': 'Change password',
+
+  // Authors
+  'app.noAuthors': 'No authors',
+  'app.editAuthor': 'Edit author',
+  'app.deleteAuthor': 'Delete author',
+  'app.editedAuthorSuccessfully': 'Author edited successfully',
+  'app.deleteAuthorWarning':
+      'Are you sure you want to delete the author "@title"? This will also delete the author if it is associated with any book. This action cannot be undone.',
 
   // Settings
   'app.settings': 'Settings',

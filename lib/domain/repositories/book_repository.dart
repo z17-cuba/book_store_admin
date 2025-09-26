@@ -16,6 +16,7 @@ import 'package:book_store_admin/domain/models/category_domain.dart';
 import 'package:book_store_admin/domain/models/ebook_domain.dart';
 import 'package:book_store_admin/domain/models/general_book_domain.dart';
 import 'package:book_store_admin/presentation/app/constants/constants.dart';
+import 'package:get/get.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
 
 class BookRepository {
@@ -178,7 +179,7 @@ class BookRepository {
     String? bookId;
     final BookModel bookModel = BookMapper.domainToModel(book);
 
-    if (book.bookId != null) {
+    if (book.bookId == null) {
       bookId = await booksDatasource.createBook(
         bookModel: bookModel,
         photoBytes: photoBytes,
@@ -210,7 +211,8 @@ class BookRepository {
       if (mediaBytes != null) {
         final mediaFile = ParseWebFile(
           mediaBytes,
-          name: '${bookModel.title ?? bookId}_${book.bookType.name}',
+          name:
+              '${bookModel.title?.removeAllWhitespace ?? bookId}_${book.bookType.name}',
         );
 
         switch (bookType) {

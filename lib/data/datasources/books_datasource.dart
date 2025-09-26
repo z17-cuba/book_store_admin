@@ -11,6 +11,7 @@ import 'package:book_store_admin/data/models/category_model.dart';
 import 'package:book_store_admin/data/models/parse_book_model.dart';
 import 'package:book_store_admin/data/models/tag_model.dart';
 import 'package:book_store_admin/presentation/app/constants/constants.dart';
+import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
 
@@ -410,10 +411,10 @@ class BooksDatasource {
         ..set('publisher',
             ParseObject(back4AppPublishers)..objectId = publisherId);
 
-      if (photoBytes != null) {
+      if (photoBytes != null && photoBytes.isNotEmpty) {
         parseFile = ParseWebFile(
           photoBytes,
-          name: 'Book_${bookModel.title ?? ''}_thumbnail',
+          name: 'Book_${bookModel.title?.removeAllWhitespace ?? ''}_thumbnail',
         );
 
         bookModelObject.set("thumbnail", parseFile);
@@ -465,10 +466,10 @@ class BooksDatasource {
         ..set('publisher',
             ParseObject(back4AppPublishers)..objectId = publisherId);
 
-      if (photoBytes != null) {
+      if (photoBytes != null && photoBytes.isNotEmpty) {
         parseFile = ParseWebFile(
           photoBytes,
-          name: 'Book_${bookModel.title ?? ''}_thumbnail',
+          name: 'Book_${bookModel.title?.removeAllWhitespace ?? ''}_thumbnail',
         );
 
         bookModelObject.set("thumbnail", parseFile);
@@ -506,31 +507,55 @@ class BooksDatasource {
       final ParseObject bookModelObject =
           (ParseObject(back4AppBooks)..objectId = bookId);
 
-      // Add Authors relation
+      // Get relations
       final ParseRelation<ParseObject> authorsRelation =
           bookModelObject.getRelation('authors');
+      final ParseRelation<ParseObject> categoriesRelation =
+          bookModelObject.getRelation('categories');
+      final ParseRelation<ParseObject> tagsRelation =
+          bookModelObject.getRelation('tags');
+
+      // To correctly update, we first query the existing relations to remove them.
+      // This prevents duplicates and handles deselection.
+      final [existingAuthors, existingCategories, existingTags] =
+          await Future.wait([
+        authorsRelation.getQuery().find(),
+        categoriesRelation.getQuery().find(),
+        tagsRelation.getQuery().find(),
+      ]);
+
+      if (existingAuthors.isNotEmpty) {
+        authorsRelation.removeAll(existingAuthors);
+      }
+      if (existingCategories.isNotEmpty) {
+        categoriesRelation.removeAll(existingCategories);
+      }
+      if (existingTags.isNotEmpty) {
+        tagsRelation.removeAll(existingTags);
+      }
+
+      // Now, add the new relations
       for (String authorId in authorIds) {
         authorsRelation.add(
           ParseObject(back4AppAuthors)..objectId = authorId,
         );
       }
-
-      // Add Categories relation
-      final ParseRelation<ParseObject> categoriesRelation =
-          bookModelObject.getRelation('categories');
       for (String categoryId in categoriesIds) {
         categoriesRelation.add(
           ParseObject(back4AppCategories)..objectId = categoryId,
         );
       }
-
-      // Add Tags relation
-      final ParseRelation<ParseObject> tagsRelation =
-          bookModelObject.getRelation('tags');
       for (String tagId in tagsIds) {
         tagsRelation.add(
           ParseObject(back4AppTags)..objectId = tagId,
         );
+      }
+
+      // IMPORTANT: You must save the parent object to persist relation changes.
+      final response = await bookModelObject.save();
+      if (!response.success) {
+        logger
+            .e('Failed to save relations for book $bookId: ${response.error}');
       }
     } catch (exception) {
       logger.e('Error on updateBookRelations: $exception');
