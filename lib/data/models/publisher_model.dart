@@ -25,8 +25,12 @@ class PublisherModel {
     return PublisherModel(
       className: json["className"],
       objectId: json["objectId"],
-      createdAt: DateTime.tryParse(json["createdAt"] ?? ""),
-      updatedAt: DateTime.tryParse(json["updatedAt"] ?? ""),
+      createdAt: json["createdAt"] != null
+          ? DateTime.tryParse(json["createdAt"] ?? "")
+          : null,
+      updatedAt: json["updatedAt"] != null
+          ? DateTime.tryParse(json["updatedAt"] ?? "")
+          : null,
       address: json["address"],
       name: json['name'],
       email: json["contactEmail"],
