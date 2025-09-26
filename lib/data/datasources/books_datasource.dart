@@ -220,7 +220,7 @@ class BooksDatasource {
       );
 
       final QueryBuilder<ParseObject> categoryQuery =
-          QueryBuilder<ParseObject>(ParseObject('Categories'))
+          QueryBuilder<ParseObject>(ParseObject(back4AppCategories))
             ..whereEqualTo('objectId', categoryId);
 
       parseQuery.setLimit(limitQueries);
@@ -504,64 +504,111 @@ class BooksDatasource {
     try {
       logger.i('Updating relations for book $bookId');
 
-      final ParseObject bookModelObject =
-          (ParseObject(back4AppBooks)..objectId = bookId);
+      final bookObject = ParseObject(back4AppBooks)..objectId = bookId;
 
-      // Get relations
-      final ParseRelation<ParseObject> authorsRelation =
-          bookModelObject.getRelation('authors');
-      final ParseRelation<ParseObject> categoriesRelation =
-          bookModelObject.getRelation('categories');
-      final ParseRelation<ParseObject> tagsRelation =
-          bookModelObject.getRelation('tags');
+      // Create lists of ParseObject pointers from the ID lists
+      final authorPointers = authorIds
+          .map((id) => ParseObject(back4AppAuthors)..objectId = id)
+          .toList();
+      final categoryPointers = categoriesIds
+          .map((id) => ParseObject(back4AppCategories)..objectId = id)
+          .toList();
+      final tagPointers = tagsIds
+          .map((id) => ParseObject(back4AppTags)..objectId = id)
+          .toList();
 
-      // To correctly update, we first query the existing relations to remove them.
-      // This prevents duplicates and handles deselection.
-      final [existingAuthors, existingCategories, existingTags] =
+      bookObject.addRelation(
+        'authors',
+        authorPointers,
+      );
+      bookObject.addRelation(
+        'categories',
+        categoryPointers,
+      );
+      bookObject.addRelation(
+        'tags',
+        tagPointers,
+      );
+
+      final response = await bookObject.save();
+
+      if (response.success) {
+        logger.i('Successfully updated relations for book $bookId');
+      } else {
+        logger.e(
+          'Failed to update relations for book $bookId: ${response.error?.message}',
+        );
+        // Optionally re-throw a specific exception
+        throw Exception(
+            'Failed to update relations: ${response.error?.message}');
+      }
+    } catch (e) {
+      logger.e('Error on updateBookRelations: $e');
+      throw CustomException(
+          code: errorOnBooksDatasource, errorMessage: 'updateBookRelations');
+    }
+  }
+
+  Future<void> removeBookRelations({
+    required String bookId,
+  }) async {
+    try {
+      logger.i('Removing relations for book $bookId');
+
+      final bookObject = ParseObject(back4AppBooks)..objectId = bookId;
+
+      // Get current relations
+      final authorsQuery = bookObject.getRelation('authors').getQuery();
+      final categoriesQuery = bookObject.getRelation('categories').getQuery();
+      final tagsQuery = bookObject.getRelation('tags').getQuery();
+
+      final [authorsResponse, categoriesResponse, tagsResponse] =
           await Future.wait([
-        authorsRelation.getQuery().find(),
-        categoriesRelation.getQuery().find(),
-        tagsRelation.getQuery().find(),
+        authorsQuery.find(),
+        categoriesQuery.find(),
+        tagsQuery.find(),
       ]);
 
-      if (existingAuthors.isNotEmpty) {
-        authorsRelation.removeAll(existingAuthors);
-      }
-      if (existingCategories.isNotEmpty) {
-        categoriesRelation.removeAll(existingCategories);
-      }
-      if (existingTags.isNotEmpty) {
-        tagsRelation.removeAll(existingTags);
+      // Remove relations individually
+      if (authorsResponse.isNotEmpty) {
+        final authorObjects = authorsResponse
+            .map((obj) => ParseObject(back4AppAuthors)..objectId = obj.objectId)
+            .toList();
+        bookObject.removeRelation('authors', authorObjects);
       }
 
-      // Now, add the new relations
-      for (String authorId in authorIds) {
-        authorsRelation.add(
-          ParseObject(back4AppAuthors)..objectId = authorId,
-        );
-      }
-      for (String categoryId in categoriesIds) {
-        categoriesRelation.add(
-          ParseObject(back4AppCategories)..objectId = categoryId,
-        );
-      }
-      for (String tagId in tagsIds) {
-        tagsRelation.add(
-          ParseObject(back4AppTags)..objectId = tagId,
-        );
+      if (categoriesResponse.isNotEmpty) {
+        final categoryObjects = categoriesResponse
+            .map((obj) =>
+                ParseObject(back4AppCategories)..objectId = obj.objectId)
+            .toList();
+        bookObject.removeRelation('categories', categoryObjects);
       }
 
-      // IMPORTANT: You must save the parent object to persist relation changes.
-      final response = await bookModelObject.save();
-      if (!response.success) {
-        logger
-            .e('Failed to save relations for book $bookId: ${response.error}');
+      if (tagsResponse.isNotEmpty) {
+        final tagObjects = tagsResponse
+            .map((obj) => ParseObject(back4AppTags)..objectId = obj.objectId)
+            .toList();
+        bookObject.removeRelation('tags', tagObjects);
       }
-    } catch (exception) {
-      logger.e('Error on updateBookRelations: $exception');
+
+      final response = await bookObject.save();
+
+      if (response.success) {
+        logger.i('Successfully removed relations for book $bookId');
+      } else {
+        logger.e(
+          'Failed to remove relations for book $bookId: ${response.error?.message}',
+        );
+        // Optionally re-throw a specific exception
+        throw Exception(
+            'Failed to remove relations: ${response.error?.message}');
+      }
+    } catch (e) {
+      logger.e('Error on removeBookRelations: $e');
       throw CustomException(
         code: errorOnBooksDatasource,
-        errorMessage: 'updateBookRelations',
+        errorMessage: 'removeBookRelations',
       );
     }
   }

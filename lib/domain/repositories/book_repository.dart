@@ -199,6 +199,11 @@ class BookRepository {
     }
 
     if (bookId != null && bookId.isNotEmpty) {
+      // Remove book relations
+      await booksDatasource.removeBookRelations(
+        bookId: bookId,
+      );
+
       // Update book relations
       await booksDatasource.updateBookRelations(
         bookId: bookId,
