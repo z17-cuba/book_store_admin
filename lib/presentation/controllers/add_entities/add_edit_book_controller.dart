@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:book_store_admin/core/enums.dart';
@@ -20,7 +21,6 @@ import 'package:book_store_admin/presentation/routes/navigator_helper.dart';
 import 'package:book_store_admin/presentation/routes/routes.dart';
 import 'package:book_store_admin/presentation/widgets/toast/toast_helper.dart';
 import 'package:book_store_admin/presentation/widgets/toast/toast_provider.dart';
-import 'package:ffmpeg_kit_flutter/ffprobe_kit.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -72,9 +72,9 @@ class AddEditBookController extends GetxController {
 
   // Audiobook
   final TextEditingController narratorNameController = TextEditingController();
-  RxInt totalDurationSeconds = 0.obs;
-  RxInt bitrate = 0.obs;
-  RxInt sampleRate = 0.obs;
+  final TextEditingController bitRateController = TextEditingController();
+  final TextEditingController sampleRateController = TextEditingController();
+  final TextEditingController durationController = TextEditingController();
 
   // Publishers - Authors - Categories - Tags
   final RxList<AuthorDomain> authors = <AuthorDomain>[].obs;
@@ -91,6 +91,52 @@ class AddEditBookController extends GetxController {
   Rx<PublisherModel?> publisher = Rx(null);
 
   @override
+  void onReady() {
+    super.onReady();
+    // onReady is a good place for the initial load.
+    // It ensures the controller is fully initialized.
+    if (book != null) {
+      _loadBookData(book!);
+    }
+  }
+
+  /// This method is now the single source of truth for loading book data
+  /// into the form. It can be called from the view when a new book is pushed
+  /// onto an existing edit page.
+  void _loadBookData(BookDomain book) {
+    titleController.text = book.title ?? '';
+    subtitleController.text = book.subtitle ?? '';
+    isbnController.text = book.isbn ?? '';
+    descriptionController.text = book.description ?? '';
+    languageController.text = book.language ?? '';
+    pageCountController.text = book.pageCount?.toString() ?? '';
+
+    selectedTags.value = book.tags ?? [];
+    selectedAuthors.value = book.authors ?? [];
+    selectedCategories.value = book.categories ?? [];
+
+    status.value = BookStatus.valueOf(book.status) ?? BookStatus.active;
+    type.value = book.bookType;
+    contentRating.value = BookContentRating.valueOf(book.contentRating) ??
+        BookContentRating.unrated;
+
+    if (book.bookType == BookType.audiobook) {
+      narratorNameController.text =
+          (book as AudiobookDomain).narratorName ?? '';
+
+      bitRateController.text =
+          (book).bitrate != null ? (book).bitrate.toString() : '';
+      sampleRateController.text =
+          (book).sampleRate != null ? (book).sampleRate.toString() : '';
+      durationController.text = (book).totalDurationSeconds != null
+          ? (book).totalDurationSeconds.toString()
+          : '';
+    }
+    // We need to update the local book reference as well
+    this.book = book;
+  }
+
+  @override
   Future<void> onInit() async {
     await Future.wait([
       _fetchPublishers(),
@@ -98,29 +144,6 @@ class AddEditBookController extends GetxController {
       _fetchAuthors(),
       _fetchTags(),
     ]);
-
-    if (book != null) {
-      titleController.text = book?.title ?? '';
-      subtitleController.text = book?.subtitle ?? '';
-      isbnController.text = book?.isbn ?? '';
-      descriptionController.text = book?.description ?? '';
-      languageController.text = book?.language ?? '';
-      pageCountController.text = book?.pageCount?.toString() ?? '';
-
-      selectedTags.value = book?.tags ?? [];
-      selectedAuthors.value = book?.authors ?? [];
-      selectedCategories.value = book?.categories ?? [];
-
-      status.value = BookStatus.valueOf(book?.status) ?? BookStatus.active;
-      type.value = book?.bookType ?? BookType.ebook;
-      contentRating.value = BookContentRating.valueOf(book?.contentRating) ??
-          BookContentRating.unrated;
-
-      if (book?.bookType == BookType.audiobook) {
-        narratorNameController.text =
-            (book as AudiobookDomain).narratorName ?? '';
-      }
-    }
     super.onInit();
   }
 
@@ -134,7 +157,7 @@ class AddEditBookController extends GetxController {
     }
   }
 
-  Future<void> selectFile() async {
+  Future<void> selectFile(BuildContext context) async {
     final FilePickerResult? pickedFileResult =
         await FilePicker.platform.pickFiles(
       allowMultiple: false,
@@ -148,56 +171,10 @@ class AddEditBookController extends GetxController {
       fileFormat.value = selectedFile.value?.extension ?? '';
       update();
 
-      // If it's an audiobook, try to extract metadata
-      if (type.value == BookType.audiobook &&
-          selectedFile.value?.path != null) {
-        await _extractAudioMetadata(selectedFile.value!);
-      } else if (type.value == BookType.ebook) {
+      if (type.value == BookType.ebook) {
         final String fileSizeString =
             (selectedFile.value!.size / (1024 * 1024)).toStringAsFixed(2);
         fileSizeMb.value = double.parse(fileSizeString);
-      }
-    }
-  }
-
-  Future<void> _extractAudioMetadata(PlatformFile selectedFile) async {
-    // List of common audio extensions
-    const audioExtensions = [
-      'mp3',
-      'wav',
-      'm4a',
-      'aac',
-      'flac',
-      'ogg',
-      'opus',
-    ];
-    final fileExtension = selectedFile.extension?.toLowerCase() ?? '';
-
-    if (audioExtensions.contains(fileExtension)) {
-      LoadingOverlay.show();
-      try {
-        final session =
-            await FFprobeKit.getMediaInformation(selectedFile.path ?? '');
-        final information = session.getMediaInformation();
-
-        if (information != null) {
-          final durationString = information.getDuration();
-          if (durationString != null) {
-            totalDurationSeconds.value =
-                (double.tryParse(durationString) ?? 0.0).round();
-          }
-
-          final streams = information.getStreams();
-          if (streams.isNotEmpty) {
-            final audioStream =
-                streams.firstWhere((s) => s.getType() == 'audio');
-            bitrate.value = int.tryParse(audioStream.getBitrate() ?? '0') ?? 0;
-            sampleRate.value =
-                int.tryParse(audioStream.getSampleRate() ?? '0') ?? 0;
-          }
-        }
-      } finally {
-        LoadingOverlay.hide();
       }
     }
   }
@@ -225,11 +202,11 @@ class AddEditBookController extends GetxController {
           mediaBytes: selectedFile.value?.bytes,
           fileSizeMb: fileSizeMb.value,
           fileFormat: fileFormat.value,
-          totalDurationSeconds: totalDurationSeconds.value,
-          bitrate: bitrate.value,
-          sampleRate: sampleRate.value,
+          totalDurationSeconds: int.tryParse(bitRateController.text.trim()),
+          bitrate: int.tryParse(sampleRateController.text.trim()),
+          sampleRate: int.tryParse(durationController.text.trim()),
           narratorName: narratorNameController.text.trim(),
-          authorIds: selectedAuthors.map((e) => e.id).toList(),
+          authorIds: selectedAuthors.map((e) => e.id ?? '').toList(),
           categoriesIds: selectedCategories.map((e) => e.id).toList(),
           tagsIds: selectedTags.map((e) => e.id).toList(),
           publisherId: publisher.value?.objectId ?? '',
@@ -241,7 +218,9 @@ class AddEditBookController extends GetxController {
           ToastHelper.showToast(
             context: context,
             toast: ToastWithColor.success(
-              message: 'app.createdBookSuccessfully'.tr,
+              message: bookId != null
+                  ? 'app.editedBookSuccessfully'.tr
+                  : 'app.createdBookSuccessfully'.tr,
             ),
           );
 
@@ -288,28 +267,38 @@ class AddEditBookController extends GetxController {
     isLoadingCategories.value = false;
   }
 
-  void goBack(BuildContext context) {
+  void _resetFields() {
+    book = null;
+    bookId == null;
     titleController.clear();
     subtitleController.clear();
     isbnController.clear();
     descriptionController.clear();
     languageController.clear();
     pageCountController.clear();
-    narratorNameController.clear();
 
     contentRating.value = BookContentRating.unrated;
     status.value = BookStatus.active;
     type.value = BookType.ebook;
+
     thumbnailBytes = Rx(Uint8List(0));
     fileFormat.value = '';
     fileSizeMb.value = 0.0;
     selectedFile.value = null;
-    totalDurationSeconds.value = 0;
-    bitrate.value = 0;
-    sampleRate.value = 0;
+
+    narratorNameController.clear();
+    bitRateController.clear();
+    sampleRateController.clear();
+    durationController.clear();
+
     selectedAuthors.clear();
     selectedCategories.clear();
+    selectedTags.clear();
+    publisher.value = publishers.isNotEmpty ? publishers.first : null;
+  }
 
+  void goBack(BuildContext context) {
+    _resetFields();
     NavigatorHelper.go(
       '/${Routes.books}',
       context: context,

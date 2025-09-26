@@ -6,12 +6,10 @@ import 'package:book_store_admin/domain/repositories/book_repository.dart';
 import 'package:book_store_admin/presentation/app/constants/constants.dart';
 import 'package:book_store_admin/presentation/app/theme/colors.dart';
 import 'package:book_store_admin/presentation/app/theme/text_styles.dart';
-import 'package:book_store_admin/presentation/bindings/add_entities/add_author_binding.dart';
 import 'package:book_store_admin/presentation/bindings/add_entities/add_publisher_binding.dart';
-import 'package:book_store_admin/presentation/controllers/add_entities/add_author_controller.dart';
+import 'package:book_store_admin/presentation/controllers/add_entities/add_edit_book_controller.dart';
 import 'package:book_store_admin/presentation/controllers/add_entities/add_publisher_controller.dart';
 import 'package:book_store_admin/presentation/controllers/user_controller.dart';
-import 'package:book_store_admin/presentation/pages/home/home_pages/books/dialogs/add_author_dialog.dart';
 import 'package:book_store_admin/presentation/pages/home/home_pages/books/dialogs/add_publisher_dialog.dart';
 import 'package:book_store_admin/presentation/routes/navigator_helper.dart';
 import 'package:book_store_admin/presentation/routes/routes.dart';
@@ -64,18 +62,6 @@ class BooksController extends GetxController {
     await NavigatorHelper.toNamed(
       Routes.createBook,
     );
-  }
-
-  Future<void> addAuthor(BuildContext context) async {
-    AddAuthorBinding.init();
-
-    await showDialog(
-      context: context,
-      builder: (context) => const AddAuthorDialog(),
-    );
-
-    // Clean up controller after dialog is closed
-    Get.delete<AddAuthorController>();
   }
 
   Future<void> addPublisher(BuildContext context) async {
@@ -153,6 +139,8 @@ class BooksController extends GetxController {
         'bookId': booksByLibrary[rowIndex].bookId ?? '',
       },
     );
+
+    Get.delete<AddEditBookController>();
   }
 
   // Books table
@@ -333,7 +321,7 @@ class BooksDataGridSource extends DataGridSource {
               ),
               DataGridCell<String>(
                 columnName: 'authors',
-                value: e.authors?.map((a) => a.name).join(', ') ?? '',
+                value: e.authors?.map((a) => a.fullName).join(', ') ?? '',
               ),
               DataGridCell<String>(
                 columnName: 'isbn',
