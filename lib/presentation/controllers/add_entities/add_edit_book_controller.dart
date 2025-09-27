@@ -11,6 +11,7 @@ import 'package:book_store_admin/domain/models/audiobook_domain.dart';
 import 'package:book_store_admin/domain/models/author_domain.dart';
 import 'package:book_store_admin/domain/models/book_domain.dart';
 import 'package:book_store_admin/domain/models/category_domain.dart';
+import 'package:book_store_admin/domain/models/ebook_domain.dart';
 import 'package:book_store_admin/domain/models/general_book_domain.dart';
 import 'package:book_store_admin/domain/models/tag_domain.dart';
 import 'package:book_store_admin/domain/repositories/author_repository.dart';
@@ -132,6 +133,14 @@ class AddEditBookController extends GetxController {
           ? (book).totalDurationSeconds.toString()
           : '';
     }
+
+    fileSizeMb.value = (book.bookType == BookType.ebook
+            ? (book as EbookDomain).fileSizeMBytes
+            : book.bookType == BookType.audiobook
+                ? (book as AudiobookDomain).fileSizeMBytes
+                : 0.0) ??
+        0.0;
+
     // We need to update the local book reference as well
     this.book = book;
   }
@@ -171,7 +180,7 @@ class AddEditBookController extends GetxController {
       fileFormat.value = selectedFile.value?.extension ?? '';
       update();
 
-      if (type.value == BookType.ebook) {
+      if (type.value != BookType.book) {
         final String fileSizeString =
             (selectedFile.value!.size / (1024 * 1024)).toStringAsFixed(2);
         fileSizeMb.value = double.parse(fileSizeString);

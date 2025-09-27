@@ -238,33 +238,60 @@ class AudiobooksDatasource {
     }
   }
 
-  Future<void> createAudiobook({
+  Future<void> createOrUpdateAudiobook({
     required String bookId,
     ParseWebFile? mediaFile,
     String? fileFormat,
+    double? fileSizeMb,
     String? narratorName,
     int? totalDurationSeconds,
     int? bitrate,
     int? sampleRate,
   }) async {
     try {
-      final audiobookObject = ParseObject(back4AppAudiobooks)
-        ..set('book', ParseObject(back4AppBooks)..objectId = bookId)
-        ..set('file', mediaFile)
-        ..set('fileFormat', fileFormat)
-        ..set('narratorName', narratorName)
-        ..set('totalDurationSeconds', totalDurationSeconds)
-        ..set('sampleRate', sampleRate)
-        ..set('bitrate', bitrate);
+      // First, try to find an existing audiobook linked to this bookId
+      final query = QueryBuilder<ParseObject>(ParseObject(back4AppAudiobooks))
+        ..whereEqualTo('book', ParseObject(back4AppBooks)..objectId = bookId);
+
+      final response = await query.query();
+
+      ParseObject audiobookObject;
+
+      if (response.success &&
+          response.results != null &&
+          response.results!.isNotEmpty) {
+        // Update existing audiobook
+        audiobookObject = response.results!.first as ParseObject;
+        logger.i('Found existing audiobook for book ID: $bookId, updating...');
+      } else {
+        // Create new audiobook
+        audiobookObject = ParseObject(back4AppAudiobooks)
+          ..set('book', ParseObject(back4AppBooks)..objectId = bookId);
+        logger.i(
+            'No existing audiobook found for book ID: $bookId, creating new...');
+      }
+
+      // Set/update the fields
+      if (mediaFile != null) audiobookObject.set('file', mediaFile);
+      if (fileFormat != null) audiobookObject.set('fileFormat', fileFormat);
+      if (fileSizeMb != null) audiobookObject.set('fileSizeMb', fileSizeMb);
+      if (narratorName != null) {
+        audiobookObject.set('narratorName', narratorName);
+      }
+      if (totalDurationSeconds != null) {
+        audiobookObject.set('totalDurationSeconds', totalDurationSeconds);
+      }
+      if (sampleRate != null) audiobookObject.set('sampleRate', sampleRate);
+      if (bitrate != null) audiobookObject.set('bitrate', bitrate);
 
       await audiobookObject.save();
 
-      logger.i('Audiobook created and linked to book ID: $bookId');
+      logger.i('Audiobook processed successfully for book ID: $bookId');
     } catch (exception) {
-      logger.e('Error on createAudiobook: $exception');
+      logger.e('Error on createOrUpdateAudiobook: $exception');
       throw CustomException(
         code: errorOnAudiobooksDatasource,
-        errorMessage: 'createAudiobook',
+        errorMessage: 'createOrUpdateAudiobook',
       );
     }
   }

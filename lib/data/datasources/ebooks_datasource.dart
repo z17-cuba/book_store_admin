@@ -238,27 +238,48 @@ class EbooksDatasource {
     }
   }
 
-  Future<void> createEbook({
+  Future<void> createOrUpdateEbook({
     required String bookId,
     ParseWebFile? mediaFile,
     String? fileFormat,
     double? fileSizeMb,
   }) async {
     try {
-      final ebookObject = ParseObject(back4AppEbooks)
-        ..set('book', ParseObject(back4AppBooks)..objectId = bookId)
-        ..set('file', mediaFile)
-        ..set('fileFormat', fileFormat)
-        ..set('fileSizeMb', fileSizeMb);
+      // First, try to find an existing ebook linked to this bookId
+      final query = QueryBuilder<ParseObject>(ParseObject(back4AppEbooks))
+        ..whereEqualTo('book', ParseObject(back4AppBooks)..objectId = bookId);
+
+      final response = await query.query();
+
+      ParseObject ebookObject;
+
+      if (response.success &&
+          response.results != null &&
+          response.results!.isNotEmpty) {
+        // Update existing ebook
+        ebookObject = response.results!.first as ParseObject;
+        logger.i('Found existing ebook for book ID: $bookId, updating...');
+      } else {
+        // Create new ebook
+        ebookObject = ParseObject(back4AppEbooks)
+          ..set('book', ParseObject(back4AppBooks)..objectId = bookId);
+        logger
+            .i('No existing ebook found for book ID: $bookId, creating new...');
+      }
+
+      // Set/update the fields
+      if (mediaFile != null) ebookObject.set('file', mediaFile);
+      if (fileFormat != null) ebookObject.set('fileFormat', fileFormat);
+      if (fileSizeMb != null) ebookObject.set('fileSizeMb', fileSizeMb);
 
       await ebookObject.save();
 
-      logger.i('Ebook created and linked to book ID: $bookId');
+      logger.i('Ebook processed successfully for book ID: $bookId');
     } catch (exception) {
-      logger.e('Error on createEbook: $exception');
+      logger.e('Error on createOrUpdateEbook: $exception');
       throw CustomException(
         code: errorOnEbooksDatasource,
-        errorMessage: 'createEbook',
+        errorMessage: 'createOrUpdateEbook',
       );
     }
   }

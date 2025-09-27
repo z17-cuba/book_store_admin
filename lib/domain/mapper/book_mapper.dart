@@ -42,6 +42,7 @@ class BookMapper {
       id: audiobook.objectId ?? '',
       audioFileUrl: audiobook.fileUrl,
       fileFormat: audiobook.fileFormat,
+      fileSizeMBytes: audiobook.fileSizeMb,
       totalDurationSeconds: audiobook.totalDurationSeconds?.toInt(),
       narratorName: audiobook.narratorName,
       bitrate: audiobook.bitrate?.toInt(),
@@ -79,7 +80,7 @@ class BookMapper {
       id: ebook.objectId ?? '',
       ebookFileUrl: ebook.fileUrl,
       fileFormat: ebook.fileFormat,
-      fileSizeBytes: ebook.fileSizeMb,
+      fileSizeMBytes: ebook.fileSizeMb,
     );
   }
 

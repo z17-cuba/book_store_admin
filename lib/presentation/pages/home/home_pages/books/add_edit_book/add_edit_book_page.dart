@@ -4,8 +4,10 @@ import 'package:book_store_admin/core/enums.dart';
 import 'package:book_store_admin/core/validator.dart';
 import 'package:book_store_admin/core/auxiliary_functions.dart';
 import 'package:book_store_admin/data/models/publisher_model.dart';
+import 'package:book_store_admin/domain/models/audiobook_domain.dart';
 import 'package:book_store_admin/domain/models/author_domain.dart';
 import 'package:book_store_admin/domain/models/category_domain.dart';
+import 'package:book_store_admin/domain/models/ebook_domain.dart';
 import 'package:book_store_admin/domain/models/tag_domain.dart';
 import 'package:book_store_admin/presentation/app/constants/constants.dart';
 import 'package:book_store_admin/presentation/app/theme/colors.dart';
@@ -351,10 +353,18 @@ class AddEditBookPage extends GetView<AddEditBookController> {
                         ? 'app.pressTheIconToUploadAnEbook'.tr
                         : 'app.pressTheIconToUploadAnAudiobook'.tr,
                     onSelectNewFile: () => controller.selectFile(context),
-                    fileName: controller.selectedFile.value?.name,
+                    fileName: controller.selectedFile.value != null
+                        ? controller.selectedFile.value?.name
+                        : controller.book != null
+                            ? (controller.book?.bookType == BookType.ebook
+                                ? (controller.book as EbookDomain).fileName
+                                : (controller.book as AudiobookDomain).fileName)
+                            : null,
                     fileSize: controller.selectedFile.value != null
                         ? '${(controller.selectedFile.value!.size / (1024 * 1024)).toStringAsFixed(2)} MB'
-                        : null,
+                        : controller.fileSizeMb.value != 0.0
+                            ? '${controller.fileSizeMb.value} MB'
+                            : null,
                   ),
                 ),
                 20.verticalSpace,

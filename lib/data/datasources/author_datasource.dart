@@ -4,7 +4,6 @@ import 'package:book_store_admin/core/custom_exception.dart';
 import 'package:book_store_admin/data/models/author_model.dart';
 import 'package:book_store_admin/presentation/app/constants/constants.dart';
 import 'package:flutter/foundation.dart';
-import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
 
@@ -43,7 +42,7 @@ class AuthorDatasource {
         parseFile = ParseWebFile(
           photoBytes,
           name:
-              'Author_${authorModel.firstName?.removeAllWhitespace ?? ''}_${authorModel.lastName?.removeAllWhitespace ?? ''}_photo',
+              'Author_${authorModel.firstName?.replaceAll(' ', '_') ?? ''}_${authorModel.lastName?.replaceAll(' ', '_') ?? ''}_photo',
         );
 
         authorModelObject.set("photo", parseFile);
@@ -96,7 +95,7 @@ class AuthorDatasource {
         parseFile = ParseWebFile(
           photoBytes,
           name:
-              'Author_${authorModel.firstName?.removeAllWhitespace ?? ''}_${authorModel.lastName?.removeAllWhitespace ?? ''}_photo',
+              'Author_${authorModel.firstName?.replaceAll(' ', '_') ?? ''}_${authorModel.lastName?.replaceAll(' ', '_') ?? ''}_photo',
         );
 
         authorModelObject.set("photo", parseFile);

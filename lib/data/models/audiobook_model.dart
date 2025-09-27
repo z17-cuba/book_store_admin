@@ -8,6 +8,7 @@ class AudiobookModel {
     required this.updatedAt,
     required this.fileUrl,
     required this.fileFormat,
+    required this.fileSizeMb,
     required this.totalDurationSeconds,
     required this.book,
     required this.narratorName,
@@ -21,6 +22,7 @@ class AudiobookModel {
   final DateTime? updatedAt;
   final String? fileUrl;
   final String? fileFormat;
+  final double? fileSizeMb;
   final int? totalDurationSeconds;
   final ParsePointer? book;
   final String? narratorName;
@@ -35,6 +37,7 @@ class AudiobookModel {
       updatedAt: DateTime.tryParse(json["updatedAt"] ?? ""),
       fileUrl: json["file"]['url'],
       fileFormat: json["fileFormat"],
+      fileSizeMb: json["fileSizeMb"],
       totalDurationSeconds: json["totalDurationSeconds"],
       book: json["book"] == null ? null : ParsePointer.fromJson(json["book"]),
       narratorName: json["narratorName"],
@@ -45,6 +48,6 @@ class AudiobookModel {
 
   @override
   String toString() {
-    return "$className, $objectId, $createdAt, $updatedAt, $fileUrl, $fileFormat, $totalDurationSeconds, $book, $narratorName, $bitrate, $sampleRate, ";
+    return "$className, $objectId, $createdAt, $updatedAt, $fileUrl, $fileFormat, $fileSizeMb, $totalDurationSeconds, $book, $narratorName, $bitrate, $sampleRate, ";
   }
 }

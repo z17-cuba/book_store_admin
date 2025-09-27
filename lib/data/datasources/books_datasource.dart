@@ -11,7 +11,6 @@ import 'package:book_store_admin/data/models/category_model.dart';
 import 'package:book_store_admin/data/models/parse_book_model.dart';
 import 'package:book_store_admin/data/models/tag_model.dart';
 import 'package:book_store_admin/presentation/app/constants/constants.dart';
-import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
 
@@ -414,7 +413,7 @@ class BooksDatasource {
       if (photoBytes != null && photoBytes.isNotEmpty) {
         parseFile = ParseWebFile(
           photoBytes,
-          name: 'Book_${bookModel.title?.removeAllWhitespace ?? ''}_thumbnail',
+          name: 'Book_${bookModel.title?.replaceAll(' ', '_') ?? ''}_thumbnail',
         );
 
         bookModelObject.set("thumbnail", parseFile);
@@ -469,7 +468,7 @@ class BooksDatasource {
       if (photoBytes != null && photoBytes.isNotEmpty) {
         parseFile = ParseWebFile(
           photoBytes,
-          name: 'Book_${bookModel.title?.removeAllWhitespace ?? ''}_thumbnail',
+          name: 'Book_${bookModel.title?.replaceAll(' ', '_') ?? ''}_thumbnail',
         );
 
         bookModelObject.set("thumbnail", parseFile);

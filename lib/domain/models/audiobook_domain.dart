@@ -28,6 +28,7 @@ class AudiobookDomain extends BookDomain {
     required this.narratorName,
     required this.bitrate,
     required this.sampleRate,
+    required this.fileSizeMBytes,
   });
 
   final String? id;
@@ -37,6 +38,7 @@ class AudiobookDomain extends BookDomain {
   final String? narratorName;
   final int? bitrate;
   final int? sampleRate;
+  final double? fileSizeMBytes;
 
   @override
   BookType get bookType => BookType.audiobook;
@@ -49,8 +51,22 @@ class AudiobookDomain extends BookDomain {
     return '${hours}h ${minutes}m';
   }
 
+  // Convenience methods for file size
+  String get formattedFileSize {
+    if (fileSizeMBytes == null) return 'Unknown';
+
+    return '${(fileSizeMBytes! / (1024 * 1024)).toStringAsFixed(1)} MB';
+  }
+
   String get audioQuality {
     if (bitrate == null || sampleRate == null) return 'Unknown';
     return '$bitrate kbps, $sampleRate Hz';
+  }
+
+  String get fileName {
+    return audioFileUrl != null
+        ? audioFileUrl!
+            .substring(audioFileUrl!.lastIndexOf('/') + 1, audioFileUrl!.length)
+        : '';
   }
 }

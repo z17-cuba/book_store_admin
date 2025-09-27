@@ -24,28 +24,32 @@ class EbookDomain extends BookDomain {
     required this.id,
     required this.ebookFileUrl,
     required this.fileFormat,
-    required this.fileSizeBytes,
+    required this.fileSizeMBytes,
   });
 
   final String? id;
   final String? ebookFileUrl;
   final String? fileFormat;
-  final double? fileSizeBytes;
+  final double? fileSizeMBytes;
 
   @override
   BookType get bookType => BookType.ebook;
 
-  // Convenience methods for ebooks
+  // Convenience methods for file size
   String get formattedFileSize {
-    if (fileSizeBytes == null) return 'Unknown';
-    if (fileSizeBytes! < 1024 * 1024) {
-      return '${(fileSizeBytes! / 1024).toStringAsFixed(1)} KB';
-    } else {
-      return '${(fileSizeBytes! / (1024 * 1024)).toStringAsFixed(1)} MB';
-    }
+    if (fileSizeMBytes == null) return 'Unknown';
+
+    return '${(fileSizeMBytes! / (1024 * 1024)).toStringAsFixed(1)} MB';
   }
 
   String get fileExtension {
     return fileFormat?.toUpperCase() ?? 'Unknown';
+  }
+
+  String get fileName {
+    return ebookFileUrl != null
+        ? ebookFileUrl!
+            .substring(ebookFileUrl!.lastIndexOf('/') + 1, ebookFileUrl!.length)
+        : '';
   }
 }

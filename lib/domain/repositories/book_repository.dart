@@ -16,7 +16,6 @@ import 'package:book_store_admin/domain/models/category_domain.dart';
 import 'package:book_store_admin/domain/models/ebook_domain.dart';
 import 'package:book_store_admin/domain/models/general_book_domain.dart';
 import 'package:book_store_admin/presentation/app/constants/constants.dart';
-import 'package:get/get.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
 
 class BookRepository {
@@ -217,12 +216,12 @@ class BookRepository {
         final mediaFile = ParseWebFile(
           mediaBytes,
           name:
-              '${bookModel.title?.removeAllWhitespace ?? bookId}_${book.bookType.name}',
+              '${bookModel.title?.replaceAll(' ', '_') ?? bookId}_${book.bookType.name}',
         );
 
         switch (bookType) {
           case BookType.ebook:
-            await ebooksDatasource.createEbook(
+            await ebooksDatasource.createOrUpdateEbook(
               bookId: bookId,
               mediaFile: mediaFile,
               fileFormat: fileFormat,
@@ -230,7 +229,7 @@ class BookRepository {
             );
             break;
           case BookType.audiobook:
-            await audiobooksDatasource.createAudiobook(
+            await audiobooksDatasource.createOrUpdateAudiobook(
               bookId: bookId,
               mediaFile: mediaFile,
               fileFormat: fileFormat,
