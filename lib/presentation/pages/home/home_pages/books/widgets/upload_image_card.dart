@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 
 import 'package:book_store_admin/presentation/app/theme/text_styles.dart';
-import 'package:book_store_admin/presentation/widgets/cache_network_image_widget_with_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
@@ -60,10 +59,10 @@ class CircleImageCard extends StatelessWidget {
                         ),
                         child: GestureDetector(
                           onTap: onSelectNewFile,
-                          child: CacheNetworkImageWidgetWithShimmer(
-                            containerWidth: double.infinity,
-                            containerHeight: 0.5.sh,
-                            urlImage: imageUrl!,
+                          child: Image.network(
+                            imageUrl!,
+                            width: double.infinity,
+                            height: 0.5.sh,
                             fit: BoxFit.cover,
                           ),
                         ),
