@@ -54,7 +54,7 @@ const String defaultLanguage = 'es';
 const String defaultCountry = 'ES';
 const String defaultUserLocale = 'es_ES';
 
-const String nameWebPanel = "Administración IslaLectura";
+const String nameWebPanel = "Zulibro";
 
 //#region Shared Preferences
 const String sharedPrefAccessToken = 'access_token';
