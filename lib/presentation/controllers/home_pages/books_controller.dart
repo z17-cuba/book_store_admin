@@ -95,7 +95,9 @@ class BooksController extends GetxController {
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('app.cancel'.tr),
+              child: Text(
+                'app.cancel'.tr,
+              ),
               onPressed: () => Navigator.of(dialogContext).pop(false),
             ),
             PrimaryButton(

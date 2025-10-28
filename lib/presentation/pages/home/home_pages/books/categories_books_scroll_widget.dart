@@ -33,7 +33,7 @@ class CategoriesBooksScrollWidget extends GetView<BooksController> {
                   () => Container(
                     padding: const EdgeInsets.all(5),
                     decoration: BoxDecoration(
-                      color: Colors.green.shade50,
+                      color: AppColors.secondaryColor,
                       borderRadius: BorderRadius.circular(12),
                       boxShadow: index == controller.pickedCategory.value
                           ? const [
@@ -49,7 +49,7 @@ class CategoriesBooksScrollWidget extends GetView<BooksController> {
                       isFilled: controller.pickedCategory.value == index,
                       expand: false,
                       textColor: controller.pickedCategory.value == index
-                          ? Theme.of(context).highlightColor
+                          ? AppColors.secondaryColor
                           : AppColors.primaryColor,
                       onPressed: () => controller.pickCategory(index),
                       title: index == 0

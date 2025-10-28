@@ -37,7 +37,6 @@ class AddEditBookPage extends GetView<AddEditBookController> {
       },
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: AppColors.primaryColor,
           automaticallyImplyLeading: true,
           leading: IconButton(
             onPressed: () => controller.goBack(context),

@@ -85,7 +85,6 @@ class DependencyInjection {
       Env.serverUrl,
       clientKey: Env.clientKey,
       masterKey: Env.masterKey,
-      debug: true,
     );
 
     Get

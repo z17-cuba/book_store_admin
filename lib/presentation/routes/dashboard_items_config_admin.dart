@@ -50,7 +50,7 @@ class DashboardItemsConfigAdmin {
     ),
     // Authors.
     DashboardItem(
-      title: () => 'app.authors'.tr,
+      title: () => 'app.authorsPlural'.tr,
       routeName: Routes.authors,
       tag: 'authors',
       routePath: '/${Routes.authors}',

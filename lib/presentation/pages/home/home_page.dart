@@ -7,6 +7,7 @@ import 'package:book_store_admin/presentation/pages/home/home_pages/widgets/prof
 import 'package:book_store_admin/presentation/routes/dashboard_item.dart';
 import 'package:book_store_admin/presentation/routes/dashboard_items_config_admin.dart';
 import 'package:book_store_admin/presentation/routes/navigator_helper.dart';
+import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -41,7 +42,6 @@ class HomePage extends GetView<HomeController> {
                     controller.showIconsOnly || !isDesktop ? 0.053.sw : 0.16.sw,
                 height: double.infinity,
                 decoration: const BoxDecoration(
-                  color: AppColors.primaryColor,
                   border: Border(
                     right: BorderSide(
                       color: AppColors.secondaryColor,
@@ -70,7 +70,6 @@ class HomePage extends GetView<HomeController> {
                       width: double.infinity,
                       padding: const EdgeInsets.symmetric(horizontal: 24.0),
                       decoration: const BoxDecoration(
-                        color: AppColors.primaryColor,
                         border: Border(
                           bottom: BorderSide(
                             color: AppColors.secondaryColor,
@@ -98,6 +97,7 @@ class HomePage extends GetView<HomeController> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
+                              EasyDynamicThemeBtn(),
                               const ChangeLanguage(),
                               4.horizontalSpace,
                               ProfileOptions(),
@@ -241,7 +241,7 @@ class HomePage extends GetView<HomeController> {
                                         style: textStyleButton.apply(
                                           color: isSelected
                                               ? AppColors.secondaryColor
-                                              : color,
+                                              : null,
                                         ),
                                       ),
                                     ),

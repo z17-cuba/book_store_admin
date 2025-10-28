@@ -3,18 +3,20 @@ import 'package:flutter/material.dart';
 class AppColors {
   //Main Theme Colors
   ///Trustworthy, calm, excellent for dark/nav UI
-  static const primaryColor = Color(0xff2E3A59); //Indigo Gray Blue
+  static const primaryColor = Color(0xff031E56);
+
   ///Highlight actions (e.g. play, checkout, CTA)
-  static const secondaryColor = Color(0xffF97316); //Orange 500
+  static const secondaryColor = Color(0xff3EA789);
+
   ///For links, playback progress, badges
-  static const accentColor = Color(0xff3B82F6); //Blue 500
+  static const accentColor = Color(0xff87CF47);
 
   //Other Colors
-  ///Success messages, license valid
+  ///Success messages
   static const greenSuccess = Color(0xff10B981); //Green 500
-  ///Warnings, near expiration
+  ///Warnings
   static const yellowWarning = Color(0xffFACC15); //Yellow 400
-  ///Validation errors, expired licenses
+  ///Validation errors
   static const redError = Color(0xffEF4444); //Red 500
 
   static final shimmerBaseColor = AppColors.grey600.withValues(alpha: 0.3);

@@ -46,8 +46,8 @@ class MyApp extends StatelessWidget {
             logWriterCallback: LoggerUtils.write,
             // End Logging
             //Theme
-            theme: lightThemeData,
-            darkTheme: darkThemeData,
+            theme: lightTheme,
+            darkTheme: darkTheme,
             themeMode: EasyDynamicTheme.of(context).themeMode!,
             //End Theme
             // Routes

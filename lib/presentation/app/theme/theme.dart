@@ -3,7 +3,7 @@ import 'package:book_store_admin/presentation/app/theme/colors.dart';
 import 'package:book_store_admin/presentation/app/theme/text_styles.dart';
 import 'package:flutter/material.dart';
 
-var lightThemeData = ThemeData(
+final ThemeData lightTheme = ThemeData(
   primaryColor: AppColors.primaryColor,
   textSelectionTheme: TextSelectionThemeData(
     selectionHandleColor: AppColors.primaryColor,
@@ -12,7 +12,7 @@ var lightThemeData = ThemeData(
   progressIndicatorTheme: const ProgressIndicatorThemeData(
     color: AppColors.primaryColor,
   ),
-  tabBarTheme: TabBarTheme(
+  tabBarTheme: TabBarThemeData(
     overlayColor: WidgetStateProperty.resolveWith<Color?>((states) {
       if (states.contains(WidgetState.pressed)) {
         return AppColors.primaryColor.withValues(alpha: 0.1);
@@ -22,9 +22,7 @@ var lightThemeData = ThemeData(
     indicatorColor: AppColors.primaryColor,
     labelColor: AppColors.primaryColor,
   ),
-  cardTheme: const CardTheme(
-    color: AppColors.canvasColorWhite,
-  ),
+  cardTheme: const CardThemeData(color: AppColors.canvasColorWhite),
   scaffoldBackgroundColor: AppColors.scaffoldColorWhite,
   canvasColor: AppColors.canvasColorWhite,
   cardColor: AppColors.canvasColorWhite,
@@ -35,6 +33,10 @@ var lightThemeData = ThemeData(
   highlightColor: AppColors.textLightTheme,
   textButtonTheme: TextButtonThemeData(
     style: ButtonStyle(
+      foregroundColor: WidgetStateProperty.all(AppColors.primaryColor),
+      overlayColor: WidgetStateProperty.all(
+        AppColors.primaryColor.withValues(alpha: 0.1),
+      ),
       shape: WidgetStateProperty.all(
         RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(roundCornerRadius / 2),
@@ -42,31 +44,39 @@ var lightThemeData = ThemeData(
       ),
     ),
   ),
+  colorScheme: const ColorScheme.light(
+    primary: AppColors.primaryColor,
+    secondary: AppColors.secondaryColor,
+    error: AppColors.redError,
+    onPrimary: Colors.white,
+    onSecondary: Colors.white,
+    surface: AppColors.canvasColorWhite,
+    onSurface: AppColors.textLightTheme,
+    surfaceTint: AppColors.primaryColor,
+    onError: Colors.white,
+  ),
 );
 
-final darkThemeData = ThemeData(
-  brightness: Brightness.dark,
-  primaryColor: AppColors.secondaryColor,
+final ThemeData darkTheme = ThemeData(
+  primaryColor: AppColors.primaryColor,
   textSelectionTheme: TextSelectionThemeData(
-    selectionHandleColor: AppColors.primaryColor,
-    selectionColor: AppColors.primaryColor.withValues(alpha: 0.3),
+    selectionHandleColor: AppColors.accentColor,
+    selectionColor: AppColors.accentColor.withValues(alpha: 0.3),
   ),
   progressIndicatorTheme: const ProgressIndicatorThemeData(
-    color: AppColors.primaryColor,
+    color: AppColors.accentColor,
   ),
-  tabBarTheme: TabBarTheme(
+  tabBarTheme: TabBarThemeData(
     overlayColor: WidgetStateProperty.resolveWith<Color?>((states) {
       if (states.contains(WidgetState.pressed)) {
-        return AppColors.primaryColor.withValues(alpha: 0.1);
+        return AppColors.accentColor.withValues(alpha: 0.1);
       }
       return null;
     }),
-    indicatorColor: AppColors.primaryColor,
-    labelColor: AppColors.primaryColor,
+    indicatorColor: AppColors.accentColor,
+    labelColor: AppColors.accentColor,
   ),
-  cardTheme: const CardTheme(
-    color: AppColors.canvasColorBlack,
-  ),
+  cardTheme: const CardThemeData(color: AppColors.canvasColorBlack),
   scaffoldBackgroundColor: AppColors.scaffoldColorBlack,
   canvasColor: AppColors.canvasColorBlack,
   cardColor: AppColors.canvasColorBlack,
@@ -77,12 +87,27 @@ final darkThemeData = ThemeData(
   highlightColor: AppColors.textDarkTheme,
   textButtonTheme: TextButtonThemeData(
     style: ButtonStyle(
+      foregroundColor: WidgetStateProperty.all(AppColors.accentColor),
+      overlayColor: WidgetStateProperty.all(
+        AppColors.accentColor.withValues(alpha: 0.1),
+      ),
       shape: WidgetStateProperty.all(
         RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(roundCornerRadius / 2),
         ),
       ),
     ),
+  ),
+  colorScheme: const ColorScheme.dark(
+    primary: AppColors.primaryColor,
+    secondary: AppColors.secondaryColor,
+    error: AppColors.redError,
+    onPrimary: Colors.white,
+    onSecondary: Colors.white,
+    surface: AppColors.canvasColorBlack,
+    onSurface: AppColors.textDarkTheme,
+    surfaceTint: AppColors.accentColor,
+    onError: Colors.white,
   ),
 );
 
